@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+runs/
+.venv*/
+# local working directories, not part of the release
+g1dribble/
+models/
+clips/
+vm_backup/
+uniform_assets/

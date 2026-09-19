@@ -1,0 +1,197 @@
+<mujoco model="g1_dribble_scene">
+  <include file="g1_robot.xml"/>
+
+  <option timestep="0.002" iterations="4" ls_iterations="6" integrator="implicitfast" solver="Newton">
+    <flag eulerdamp="disable"/>
+  </option>
+
+  <statistic center="0 0 0.6" extent="1.6" meansize="0.04"/>
+  <visual>
+    <headlight diffuse=".8 .8 .8" ambient=".3 .3 .3" specular="0.6 0.6 0.6"/>
+    <global azimuth="150" elevation="-15" offwidth="1920" offheight="1080"/>
+    <quality shadowsize="8192"/>
+  </visual>
+
+  <asset>
+    <texture type="skybox" builtin="gradient" rgb1="0.95 0.95 0.97" rgb2="0.75 0.78 0.85" width="512" height="512"/>
+    <texture type="2d" name="court" builtin="checker" mark="edge" rgb1="0.22 0.40 0.80" rgb2="0.15 0.30 0.66" markrgb="0.75 0.85 1.0" width="300" height="300"/>
+    <material name="court" texture="court" texuniform="true" texrepeat="6 6" reflectance="0.15"/>
+    <texture name="basketball" type="2d" file="assets/basketball.png"/>
+    <material name="ball_mat" texture="basketball" specular="0.2" shininess="0.3" rgba="1 1 1 1"/>
+  </asset>
+
+  <worldbody>
+    <geom name="floor" type="plane" size="0 0 0.05" material="court" contype="1" conaffinity="0" friction="0.6"/>
+    <light pos="1 1 3" dir="-0.3 -0.3 -1" directional="true" castshadow="true"/>
+    <camera name="side" pos="2.4 -2.0 1.1" xyaxes="0.64 0.77 0 -0.22 0.18 0.96" mode="fixed"/>
+    <camera name="front" pos="2.6 0.0 0.9" xyaxes="0 1 0 -0.25 0 0.97" mode="fixed"/>
+    <body name="ball" pos="0.3 0 0.6192547988587571">
+      <freejoint name="ball_freejoint"/>
+      <geom name="ball" type="sphere" size="0.11925" mass="0.62369" shellinertia="true"
+            material="ball_mat" contype="0" conaffinity="0" condim="3" priority="2"/>
+      <site name="ball_site" size="0.01" group="5"/>
+    </body>
+  </worldbody>
+
+  <contact>
+    <pair name="floor_left_foot" geom1="floor" geom2="left_foot" condim="3" friction="0.6 0.6 0.005 0.0001 0.0001"/>
+    <pair name="floor_right_foot" geom1="floor" geom2="right_foot" condim="3" friction="0.6 0.6 0.005 0.0001 0.0001"/>
+    <pair name="floor_ball" geom1="floor" geom2="ball" condim="3" friction="0.6 0.6 0.005 0.0001 0.0001" solref="0.03 0.0834580368595198"/>
+    <pair name="ball_left_hand_collision" geom1="ball" geom2="left_hand_collision" condim="3" friction="0.8 0.8 0.005 0.0001 0.0001" solref="0.03 0.0834580368595198"/>
+    <pair name="ball_right_hand_collision" geom1="ball" geom2="right_hand_collision" condim="3" friction="0.8 0.8 0.005 0.0001 0.0001" solref="0.03 0.0834580368595198"/>
+    <pair name="ball_left_wrist_collision" geom1="ball" geom2="left_wrist_collision" condim="3" friction="0.8 0.8 0.005 0.0001 0.0001" solref="0.03 0.0834580368595198"/>
+    <pair name="ball_right_wrist_collision" geom1="ball" geom2="right_wrist_collision" condim="3" friction="0.8 0.8 0.005 0.0001 0.0001" solref="0.03 0.0834580368595198"/>
+    <pair name="ball_left_elbow_yaw_collision" geom1="ball" geom2="left_elbow_yaw_collision" condim="3" friction="0.8 0.8 0.005 0.0001 0.0001" solref="0.03 0.0834580368595198"/>
+    <pair name="ball_right_elbow_yaw_collision" geom1="ball" geom2="right_elbow_yaw_collision" condim="3" friction="0.8 0.8 0.005 0.0001 0.0001" solref="0.03 0.0834580368595198"/>
+    <pair name="ball_left_shoulder_yaw_collision" geom1="ball" geom2="left_shoulder_yaw_collision" condim="3" friction="0.8 0.8 0.005 0.0001 0.0001" solref="0.03 0.0834580368595198"/>
+    <pair name="ball_right_shoulder_yaw_collision" geom1="ball" geom2="right_shoulder_yaw_collision" condim="3" friction="0.8 0.8 0.005 0.0001 0.0001" solref="0.03 0.0834580368595198"/>
+    <pair name="ball_left_thigh_collision" geom1="ball" geom2="left_thigh_collision" condim="3" friction="0.8 0.8 0.005 0.0001 0.0001" solref="0.03 0.0834580368595198"/>
+    <pair name="ball_right_thigh_collision" geom1="ball" geom2="right_thigh_collision" condim="3" friction="0.8 0.8 0.005 0.0001 0.0001" solref="0.03 0.0834580368595198"/>
+    <pair name="ball_left_shin_collision" geom1="ball" geom2="left_shin_collision" condim="3" friction="0.8 0.8 0.005 0.0001 0.0001" solref="0.03 0.0834580368595198"/>
+    <pair name="ball_right_shin_collision" geom1="ball" geom2="right_shin_collision" condim="3" friction="0.8 0.8 0.005 0.0001 0.0001" solref="0.03 0.0834580368595198"/>
+    <pair name="ball_left_linkage_brace_collision" geom1="ball" geom2="left_linkage_brace_collision" condim="3" friction="0.8 0.8 0.005 0.0001 0.0001" solref="0.03 0.0834580368595198"/>
+    <pair name="ball_right_linkage_brace_collision" geom1="ball" geom2="right_linkage_brace_collision" condim="3" friction="0.8 0.8 0.005 0.0001 0.0001" solref="0.03 0.0834580368595198"/>
+    <pair name="ball_left_hip_collision" geom1="ball" geom2="left_hip_collision" condim="3" friction="0.8 0.8 0.005 0.0001 0.0001" solref="0.03 0.0834580368595198"/>
+    <pair name="ball_right_hip_collision" geom1="ball" geom2="right_hip_collision" condim="3" friction="0.8 0.8 0.005 0.0001 0.0001" solref="0.03 0.0834580368595198"/>
+    <pair name="ball_left_foot" geom1="ball" geom2="left_foot" condim="3" friction="0.8 0.8 0.005 0.0001 0.0001" solref="0.03 0.0834580368595198"/>
+    <pair name="ball_right_foot" geom1="ball" geom2="right_foot" condim="3" friction="0.8 0.8 0.005 0.0001 0.0001" solref="0.03 0.0834580368595198"/>
+    <pair name="ball_pelvis_collision" geom1="ball" geom2="pelvis_collision" condim="3" friction="0.8 0.8 0.005 0.0001 0.0001" solref="0.03 0.0834580368595198"/>
+    <pair name="ball_torso_collision" geom1="ball" geom2="torso_collision" condim="3" friction="0.8 0.8 0.005 0.0001 0.0001" solref="0.03 0.0834580368595198"/>
+    <pair name="ball_head_collision" geom1="ball" geom2="head_collision" condim="3" friction="0.8 0.8 0.005 0.0001 0.0001" solref="0.03 0.0834580368595198"/>
+    <pair name="self_left_hand_collision_left_thigh_collision" geom1="left_hand_collision" geom2="left_thigh_collision" condim="1"/>
+    <pair name="self_left_hand_collision_left_shin_collision" geom1="left_hand_collision" geom2="left_shin_collision" condim="1"/>
+    <pair name="self_left_hand_collision_left_hip_collision" geom1="left_hand_collision" geom2="left_hip_collision" condim="1"/>
+    <pair name="self_left_hand_collision_right_thigh_collision" geom1="left_hand_collision" geom2="right_thigh_collision" condim="1"/>
+    <pair name="self_left_hand_collision_right_shin_collision" geom1="left_hand_collision" geom2="right_shin_collision" condim="1"/>
+    <pair name="self_left_hand_collision_right_hip_collision" geom1="left_hand_collision" geom2="right_hip_collision" condim="1"/>
+    <pair name="self_left_hand_collision_pelvis_collision" geom1="left_hand_collision" geom2="pelvis_collision" condim="1"/>
+    <pair name="self_left_hand_collision_torso_collision" geom1="left_hand_collision" geom2="torso_collision" condim="1"/>
+    <pair name="self_left_wrist_collision_left_thigh_collision" geom1="left_wrist_collision" geom2="left_thigh_collision" condim="1"/>
+    <pair name="self_left_wrist_collision_left_shin_collision" geom1="left_wrist_collision" geom2="left_shin_collision" condim="1"/>
+    <pair name="self_left_wrist_collision_left_hip_collision" geom1="left_wrist_collision" geom2="left_hip_collision" condim="1"/>
+    <pair name="self_left_wrist_collision_right_thigh_collision" geom1="left_wrist_collision" geom2="right_thigh_collision" condim="1"/>
+    <pair name="self_left_wrist_collision_right_shin_collision" geom1="left_wrist_collision" geom2="right_shin_collision" condim="1"/>
+    <pair name="self_left_wrist_collision_right_hip_collision" geom1="left_wrist_collision" geom2="right_hip_collision" condim="1"/>
+    <pair name="self_left_wrist_collision_pelvis_collision" geom1="left_wrist_collision" geom2="pelvis_collision" condim="1"/>
+    <pair name="self_left_wrist_collision_torso_collision" geom1="left_wrist_collision" geom2="torso_collision" condim="1"/>
+    <pair name="self_left_elbow_yaw_collision_left_thigh_collision" geom1="left_elbow_yaw_collision" geom2="left_thigh_collision" condim="1"/>
+    <pair name="self_left_elbow_yaw_collision_left_shin_collision" geom1="left_elbow_yaw_collision" geom2="left_shin_collision" condim="1"/>
+    <pair name="self_left_elbow_yaw_collision_left_hip_collision" geom1="left_elbow_yaw_collision" geom2="left_hip_collision" condim="1"/>
+    <pair name="self_left_elbow_yaw_collision_right_thigh_collision" geom1="left_elbow_yaw_collision" geom2="right_thigh_collision" condim="1"/>
+    <pair name="self_left_elbow_yaw_collision_right_shin_collision" geom1="left_elbow_yaw_collision" geom2="right_shin_collision" condim="1"/>
+    <pair name="self_left_elbow_yaw_collision_right_hip_collision" geom1="left_elbow_yaw_collision" geom2="right_hip_collision" condim="1"/>
+    <pair name="self_left_elbow_yaw_collision_pelvis_collision" geom1="left_elbow_yaw_collision" geom2="pelvis_collision" condim="1"/>
+    <pair name="self_left_elbow_yaw_collision_torso_collision" geom1="left_elbow_yaw_collision" geom2="torso_collision" condim="1"/>
+    <pair name="self_right_hand_collision_left_thigh_collision" geom1="right_hand_collision" geom2="left_thigh_collision" condim="1"/>
+    <pair name="self_right_hand_collision_left_shin_collision" geom1="right_hand_collision" geom2="left_shin_collision" condim="1"/>
+    <pair name="self_right_hand_collision_left_hip_collision" geom1="right_hand_collision" geom2="left_hip_collision" condim="1"/>
+    <pair name="self_right_hand_collision_right_thigh_collision" geom1="right_hand_collision" geom2="right_thigh_collision" condim="1"/>
+    <pair name="self_right_hand_collision_right_shin_collision" geom1="right_hand_collision" geom2="right_shin_collision" condim="1"/>
+    <pair name="self_right_hand_collision_right_hip_collision" geom1="right_hand_collision" geom2="right_hip_collision" condim="1"/>
+    <pair name="self_right_hand_collision_pelvis_collision" geom1="right_hand_collision" geom2="pelvis_collision" condim="1"/>
+    <pair name="self_right_hand_collision_torso_collision" geom1="right_hand_collision" geom2="torso_collision" condim="1"/>
+    <pair name="self_right_wrist_collision_left_thigh_collision" geom1="right_wrist_collision" geom2="left_thigh_collision" condim="1"/>
+    <pair name="self_right_wrist_collision_left_shin_collision" geom1="right_wrist_collision" geom2="left_shin_collision" condim="1"/>
+    <pair name="self_right_wrist_collision_left_hip_collision" geom1="right_wrist_collision" geom2="left_hip_collision" condim="1"/>
+    <pair name="self_right_wrist_collision_right_thigh_collision" geom1="right_wrist_collision" geom2="right_thigh_collision" condim="1"/>
+    <pair name="self_right_wrist_collision_right_shin_collision" geom1="right_wrist_collision" geom2="right_shin_collision" condim="1"/>
+    <pair name="self_right_wrist_collision_right_hip_collision" geom1="right_wrist_collision" geom2="right_hip_collision" condim="1"/>
+    <pair name="self_right_wrist_collision_pelvis_collision" geom1="right_wrist_collision" geom2="pelvis_collision" condim="1"/>
+    <pair name="self_right_wrist_collision_torso_collision" geom1="right_wrist_collision" geom2="torso_collision" condim="1"/>
+    <pair name="self_right_elbow_yaw_collision_left_thigh_collision" geom1="right_elbow_yaw_collision" geom2="left_thigh_collision" condim="1"/>
+    <pair name="self_right_elbow_yaw_collision_left_shin_collision" geom1="right_elbow_yaw_collision" geom2="left_shin_collision" condim="1"/>
+    <pair name="self_right_elbow_yaw_collision_left_hip_collision" geom1="right_elbow_yaw_collision" geom2="left_hip_collision" condim="1"/>
+    <pair name="self_right_elbow_yaw_collision_right_thigh_collision" geom1="right_elbow_yaw_collision" geom2="right_thigh_collision" condim="1"/>
+    <pair name="self_right_elbow_yaw_collision_right_shin_collision" geom1="right_elbow_yaw_collision" geom2="right_shin_collision" condim="1"/>
+    <pair name="self_right_elbow_yaw_collision_right_hip_collision" geom1="right_elbow_yaw_collision" geom2="right_hip_collision" condim="1"/>
+    <pair name="self_right_elbow_yaw_collision_pelvis_collision" geom1="right_elbow_yaw_collision" geom2="pelvis_collision" condim="1"/>
+    <pair name="self_right_elbow_yaw_collision_torso_collision" geom1="right_elbow_yaw_collision" geom2="torso_collision" condim="1"/>
+  </contact>
+
+  <actuator>
+    <position name="left_hip_pitch" joint="left_hip_pitch_joint" kp="40.1792" kv="2.5579" inheritrange="1" forcerange="-88.0 88.0"/>
+    <position name="left_hip_roll" joint="left_hip_roll_joint" kp="99.0984" kv="6.3088" inheritrange="1" forcerange="-139.0 139.0"/>
+    <position name="left_hip_yaw" joint="left_hip_yaw_joint" kp="40.1792" kv="2.5579" inheritrange="1" forcerange="-88.0 88.0"/>
+    <position name="left_knee" joint="left_knee_joint" kp="99.0984" kv="6.3088" inheritrange="1" forcerange="-139.0 139.0"/>
+    <position name="left_ankle_pitch" joint="left_ankle_pitch_joint" kp="28.5012" kv="1.8144" inheritrange="1" forcerange="-50.0 50.0"/>
+    <position name="left_ankle_roll" joint="left_ankle_roll_joint" kp="28.5012" kv="1.8144" inheritrange="1" forcerange="-50.0 50.0"/>
+    <position name="right_hip_pitch" joint="right_hip_pitch_joint" kp="40.1792" kv="2.5579" inheritrange="1" forcerange="-88.0 88.0"/>
+    <position name="right_hip_roll" joint="right_hip_roll_joint" kp="99.0984" kv="6.3088" inheritrange="1" forcerange="-139.0 139.0"/>
+    <position name="right_hip_yaw" joint="right_hip_yaw_joint" kp="40.1792" kv="2.5579" inheritrange="1" forcerange="-88.0 88.0"/>
+    <position name="right_knee" joint="right_knee_joint" kp="99.0984" kv="6.3088" inheritrange="1" forcerange="-139.0 139.0"/>
+    <position name="right_ankle_pitch" joint="right_ankle_pitch_joint" kp="28.5012" kv="1.8144" inheritrange="1" forcerange="-50.0 50.0"/>
+    <position name="right_ankle_roll" joint="right_ankle_roll_joint" kp="28.5012" kv="1.8144" inheritrange="1" forcerange="-50.0 50.0"/>
+    <position name="waist_yaw" joint="waist_yaw_joint" kp="40.1792" kv="2.5579" inheritrange="1" forcerange="-88.0 88.0"/>
+    <position name="waist_roll" joint="waist_roll_joint" kp="28.5012" kv="1.8144" inheritrange="1" forcerange="-50.0 50.0"/>
+    <position name="waist_pitch" joint="waist_pitch_joint" kp="28.5012" kv="1.8144" inheritrange="1" forcerange="-50.0 50.0"/>
+    <position name="left_shoulder_pitch" joint="left_shoulder_pitch_joint" kp="14.2506" kv="0.9072" inheritrange="1" forcerange="-25.0 25.0"/>
+    <position name="left_shoulder_roll" joint="left_shoulder_roll_joint" kp="14.2506" kv="0.9072" inheritrange="1" forcerange="-25.0 25.0"/>
+    <position name="left_shoulder_yaw" joint="left_shoulder_yaw_joint" kp="14.2506" kv="0.9072" inheritrange="1" forcerange="-25.0 25.0"/>
+    <position name="left_elbow" joint="left_elbow_joint" kp="14.2506" kv="0.9072" inheritrange="1" forcerange="-25.0 25.0"/>
+    <position name="left_wrist_roll" joint="left_wrist_roll_joint" kp="14.2506" kv="0.9072" inheritrange="1" forcerange="-25.0 25.0"/>
+    <position name="left_wrist_pitch" joint="left_wrist_pitch_joint" kp="16.7783" kv="1.0681" inheritrange="1" forcerange="-5.0 5.0"/>
+    <position name="left_wrist_yaw" joint="left_wrist_yaw_joint" kp="16.7783" kv="1.0681" inheritrange="1" forcerange="-5.0 5.0"/>
+    <position name="right_shoulder_pitch" joint="right_shoulder_pitch_joint" kp="14.2506" kv="0.9072" inheritrange="1" forcerange="-25.0 25.0"/>
+    <position name="right_shoulder_roll" joint="right_shoulder_roll_joint" kp="14.2506" kv="0.9072" inheritrange="1" forcerange="-25.0 25.0"/>
+    <position name="right_shoulder_yaw" joint="right_shoulder_yaw_joint" kp="14.2506" kv="0.9072" inheritrange="1" forcerange="-25.0 25.0"/>
+    <position name="right_elbow" joint="right_elbow_joint" kp="14.2506" kv="0.9072" inheritrange="1" forcerange="-25.0 25.0"/>
+    <position name="right_wrist_roll" joint="right_wrist_roll_joint" kp="14.2506" kv="0.9072" inheritrange="1" forcerange="-25.0 25.0"/>
+    <position name="right_wrist_pitch" joint="right_wrist_pitch_joint" kp="16.7783" kv="1.0681" inheritrange="1" forcerange="-5.0 5.0"/>
+    <position name="right_wrist_yaw" joint="right_wrist_yaw_joint" kp="16.7783" kv="1.0681" inheritrange="1" forcerange="-5.0 5.0"/>
+  </actuator>
+
+  <sensor>
+    <gyro name="gyro_pelvis" site="imu_in_pelvis"/>
+    <accelerometer name="accelerometer_pelvis" site="imu_in_pelvis"/>
+    <framezaxis name="upvector_pelvis" objtype="site" objname="imu_in_pelvis"/>
+    <framelinvel name="global_linvel_pelvis" objtype="site" objname="imu_in_pelvis"/>
+    <frameangvel name="global_angvel_pelvis" objtype="site" objname="imu_in_pelvis"/>
+    <velocimeter name="local_linvel_pelvis" site="imu_in_pelvis"/>
+    <gyro name="gyro_torso" site="imu_in_torso"/>
+    <framezaxis name="upvector_torso" objtype="site" objname="imu_in_torso"/>
+    <framelinvel name="global_linvel_torso" objtype="site" objname="imu_in_torso"/>
+    <frameangvel name="global_angvel_torso" objtype="site" objname="imu_in_torso"/>
+    <framepos name="ball_pos" objtype="site" objname="ball_site"/>
+    <framelinvel name="ball_linvel" objtype="site" objname="ball_site"/>
+    <frameangvel name="ball_angvel" objtype="site" objname="ball_site"/>
+    <framepos name="left_palm_pos" objtype="site" objname="left_palm"/>
+    <framepos name="right_palm_pos" objtype="site" objname="right_palm"/>
+    <framelinvel name="left_palm_linvel" objtype="site" objname="left_palm"/>
+    <framelinvel name="right_palm_linvel" objtype="site" objname="right_palm"/>
+    <framepos name="left_foot_pos" objtype="site" objname="left_foot"/>
+    <framepos name="right_foot_pos" objtype="site" objname="right_foot"/>
+    <framelinvel name="left_foot_global_linvel" objtype="site" objname="left_foot"/>
+    <framelinvel name="right_foot_global_linvel" objtype="site" objname="right_foot"/>
+    <framepos name="pelvis_pos" objtype="site" objname="imu_in_pelvis"/>
+    <framequat name="pelvis_quat" objtype="site" objname="imu_in_pelvis"/>
+    <contact name="ball_floor_found" geom1="ball" geom2="floor" reduce="mindist" num="1" data="found"/>
+    <contact name="left_foot_floor_found" geom1="left_foot" geom2="floor" reduce="mindist" num="1" data="found"/>
+    <contact name="right_foot_floor_found" geom1="right_foot" geom2="floor" reduce="mindist" num="1" data="found"/>
+    <contact name="ball_left_hand_collision_found" geom1="ball" geom2="left_hand_collision" reduce="mindist" num="1" data="found"/>
+    <contact name="ball_right_hand_collision_found" geom1="ball" geom2="right_hand_collision" reduce="mindist" num="1" data="found"/>
+    <contact name="ball_left_wrist_collision_found" geom1="ball" geom2="left_wrist_collision" reduce="mindist" num="1" data="found"/>
+    <contact name="ball_right_wrist_collision_found" geom1="ball" geom2="right_wrist_collision" reduce="mindist" num="1" data="found"/>
+    <contact name="ball_left_elbow_yaw_collision_found" geom1="ball" geom2="left_elbow_yaw_collision" reduce="mindist" num="1" data="found"/>
+    <contact name="ball_right_elbow_yaw_collision_found" geom1="ball" geom2="right_elbow_yaw_collision" reduce="mindist" num="1" data="found"/>
+    <contact name="ball_left_shoulder_yaw_collision_found" geom1="ball" geom2="left_shoulder_yaw_collision" reduce="mindist" num="1" data="found"/>
+    <contact name="ball_right_shoulder_yaw_collision_found" geom1="ball" geom2="right_shoulder_yaw_collision" reduce="mindist" num="1" data="found"/>
+    <contact name="ball_left_thigh_collision_found" geom1="ball" geom2="left_thigh_collision" reduce="mindist" num="1" data="found"/>
+    <contact name="ball_right_thigh_collision_found" geom1="ball" geom2="right_thigh_collision" reduce="mindist" num="1" data="found"/>
+    <contact name="ball_left_shin_collision_found" geom1="ball" geom2="left_shin_collision" reduce="mindist" num="1" data="found"/>
+    <contact name="ball_right_shin_collision_found" geom1="ball" geom2="right_shin_collision" reduce="mindist" num="1" data="found"/>
+    <contact name="ball_left_linkage_brace_collision_found" geom1="ball" geom2="left_linkage_brace_collision" reduce="mindist" num="1" data="found"/>
+    <contact name="ball_right_linkage_brace_collision_found" geom1="ball" geom2="right_linkage_brace_collision" reduce="mindist" num="1" data="found"/>
+    <contact name="ball_left_hip_collision_found" geom1="ball" geom2="left_hip_collision" reduce="mindist" num="1" data="found"/>
+    <contact name="ball_right_hip_collision_found" geom1="ball" geom2="right_hip_collision" reduce="mindist" num="1" data="found"/>
+    <contact name="ball_left_foot_found" geom1="ball" geom2="left_foot" reduce="mindist" num="1" data="found"/>
+    <contact name="ball_right_foot_found" geom1="ball" geom2="right_foot" reduce="mindist" num="1" data="found"/>
+    <contact name="ball_pelvis_collision_found" geom1="ball" geom2="pelvis_collision" reduce="mindist" num="1" data="found"/>
+    <contact name="ball_torso_collision_found" geom1="ball" geom2="torso_collision" reduce="mindist" num="1" data="found"/>
+    <contact name="ball_head_collision_found" geom1="ball" geom2="head_collision" reduce="mindist" num="1" data="found"/>
+  </sensor>
+  <keyframe>
+    <key name="home" qpos="0.00000 0.00000 0.79000 1.00000 0.00000 0.00000 0.00000 -0.10000 0.00000 0.00000 0.30000 -0.20000 0.00000 -0.10000 0.00000 0.00000 0.30000 -0.20000 0.00000 0.00000 0.00000 0.00000 0.35000 0.18000 0.00000 0.87000 0.00000 0.00000 0.00000 0.35000 -0.18000 0.00000 0.87000 0.00000 0.00000 0.00000 0.30000 0.00000 0.11925 1.00000 0.00000 0.00000 0.00000" ctrl="-0.10000 0.00000 0.00000 0.30000 -0.20000 0.00000 -0.10000 0.00000 0.00000 0.30000 -0.20000 0.00000 0.00000 0.00000 0.00000 0.35000 0.18000 0.00000 0.87000 0.00000 0.00000 0.00000 0.35000 -0.18000 0.00000 0.87000 0.00000 0.00000 0.00000"/>
+    <key name="stance_left_front" qpos="0.00401 -0.00247 0.73843 0.99999 0.00175 0.00154 0.00456 -0.46939 0.12091 -0.00266 0.76703 -0.29758 -0.09958 -0.16382 -0.12077 0.00296 0.72007 -0.55700 0.11144 0.00001 0.00006 -0.00160 0.34781 0.17651 -0.00074 0.87145 0.00000 0.00033 -0.00008 0.34781 -0.17662 0.00071 0.87145 -0.00000 0.00033 0.00008 0.30000 0.00000 0.11925 1.00000 0.00000 0.00000 0.00000" ctrl="-0.34242 0.08268 0.06490 0.64618 -0.21931 -0.00307 -0.33171 -0.05792 -0.07212 0.59959 -0.19380 0.10662 -0.00015 -0.00154 0.03845 0.40246 0.26385 0.01780 0.83512 -0.00008 -0.00783 0.00190 0.40258 -0.26115 -0.01714 0.83510 0.00009 -0.00783 -0.00183"/>
+    <key name="stance_right_front" qpos="0.00401 0.00246 0.73843 0.99999 -0.00175 0.00154 -0.00456 -0.16376 0.12116 -0.00297 0.71988 -0.55686 -0.11181 -0.46945 -0.12052 0.00265 0.76720 -0.29772 0.09927 -0.00001 -0.00014 -0.00160 0.34781 0.17662 -0.00071 0.87145 0.00000 0.00033 -0.00008 0.34781 -0.17651 0.00074 0.87145 -0.00000 0.00033 0.00008 0.30000 0.00000 0.11925 1.00000 0.00000 0.00000 0.00000" ctrl="-0.33162 0.05807 0.07239 0.59945 -0.19360 -0.10689 -0.34249 -0.08250 -0.06456 0.64634 -0.21937 0.00285 0.00016 0.00338 0.03844 0.40258 0.26112 0.01714 0.83510 -0.00009 -0.00783 0.00182 0.40246 -0.26388 -0.01781 0.83512 0.00008 -0.00783 -0.00190"/>
+  </keyframe>
+</mujoco>

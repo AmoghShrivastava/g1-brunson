@@ -1,0 +1,57 @@
+{
+ "trained": {
+  "stance": 0.6666666666666666,
+  "crossings": 44.333333333333336,
+  "touches": 49.5,
+  "catches": 40.833333333333336,
+  "chains": 37.583333333333336,
+  "resets": 5.333333333333333,
+  "bad_bounces": 5.333333333333333,
+  "wrong_hand": 0.5833333333333334,
+  "fell": 0.0,
+  "steps": 1000.0,
+  "feet_off_steps": 11.333333333333334,
+  "ball_apex_mean": 0.3888832089591084,
+  "pelvis_z_mean": 0.5899126351227362,
+  "max_abs_action": 0.9985750019550323,
+  "mean_dribble_period_s": 0.3115735956407641,
+  "success": 1.0,
+  "episodes": 12
+ },
+ "neutral": {
+  "stance": 0.6666666666666666,
+  "crossings": 0.0,
+  "touches": 0.16666666666666666,
+  "catches": 0.0,
+  "chains": 0.0,
+  "resets": 2.3333333333333335,
+  "bad_bounces": 0.16666666666666666,
+  "wrong_hand": 0.0,
+  "fell": 1.0,
+  "steps": 93.0,
+  "feet_off_steps": 0.0,
+  "ball_apex_mean": 0.3985676394302457,
+  "pelvis_z_mean": 0.6419305223273134,
+  "max_abs_action": 0.0,
+  "mean_dribble_period_s": 0.34975,
+  "success": 0.0,
+  "episodes": 12
+ },
+ "settings": {
+  "weights": "../models/weights_G_kf_236M.npz",
+  "episodes": 12,
+  "seconds": 20.0,
+  "seed": 1000,
+  "video_episodes": 2,
+  "camera": "side",
+  "success_crossings": 6,
+  "out": "../models/evaluation_G_236M",
+  "save_traj": 1,
+  "xml": "C:\\Users\\amogh\\Downloads\\g1 crossover dribble (attempt 2)\\g1dribble\\assets\\g1_dribble_scene.xml"
+ },
+ "causality": {
+  "trained_success_rate": 1.0,
+  "neutral_success_rate": 0.0,
+  "passed": true
+ }
+}

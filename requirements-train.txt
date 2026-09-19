@@ -1,0 +1,10 @@
+jax[cuda12]==0.10.2
+mujoco==3.12.0
+mujoco-mjx==3.12.0
+brax==0.14.2
+playground==0.2.0
+scipy>=1.11
+imageio>=2.34
+imageio-ffmpeg>=0.5
+mediapy>=1.2
+ml-collections>=0.1
