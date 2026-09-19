@@ -292,7 +292,7 @@ footer{padding:40px 0;border-top:1px solid var(--line);font-size:.9rem;color:var
   <div class="wrap">
     <span class="eyebrow">04 · Perception</span>
     <h2>What the robot sees.</h2>
-    <p>These frames are rendered by MuJoCo from the robot's head camera during the recorded test, then run through the shipped perception module. Nothing here is illustrated by hand. Pick a stream, scrub through time, or press play.</p>
+    <p>These frames are rendered by MuJoCo from the robot's head camera during the recorded test, then run through the shipped perception module. Nothing here is illustrated by hand. Pick a stream; it plays on its own, scrub to pause.</p>
     <div class="grid g2 reveal" style="align-items:start">
       <div>
         <div class="vis"><img id="visImg" alt="head camera frame"><span class="lbl" id="vislbl">colour stream · 424×240</span><span class="lbl2" id="visinfo"></span></div>
@@ -497,7 +497,12 @@ scoreIt();
   $$('#visgrid div').forEach(d=>d.onclick=()=>{mode=d.dataset.m;show()});
   $('#vist').oninput=e=>{i=+e.target.value;show()};
   let timer=null;
-  $('#visPlay').onclick=()=>{playing=!playing;$('#visPlay').textContent=playing?'❚❚':'▶';if(playing)timer=setInterval(()=>{i=(i+1)%N;$('#vist').value=i;show()},110);else clearInterval(timer)};
+  function setPlaying(p){playing=p;$('#visPlay').textContent=playing?'❚❚':'▶';clearInterval(timer);if(playing)timer=setInterval(()=>{i=(i+1)%N;$('#vist').value=i;show()},110)}
+  $('#visPlay').onclick=()=>setPlaying(!playing);
+  // autoplay while the section is on screen; scrubbing pauses, releasing the slider resumes
+  new IntersectionObserver(es=>es.forEach(e=>setPlaying(e.isIntersecting)),{threshold:.2}).observe($('#visImg'));
+  $('#vist').addEventListener('pointerdown',()=>setPlaying(false));
+  $('#vist').addEventListener('change',()=>setPlaying(true));
   fetch('vis/frames.json').then(r=>r.json()).then(j=>{meta=j;const s=j.summary;$('#visSummary').textContent=`Ball found on ${Math.round(s.detection_rate*100)} % of frames, all by the depth detector. Detection error ${(s.mean_detection_error_m*1000).toFixed(1)} mm; tracker error ${(s.mean_estimate_error_m*1000).toFixed(0)} mm including the frames where the ball is hidden.`;show()});
   // preload
   modes.forEach(m=>{for(let k=0;k<N;k++){const im=new Image();im.src=src(m,k);cache[m+k]=im}});
