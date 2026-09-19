@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>G1 Brunson</title>
-<meta name="description" content="A Unitree G1 humanoid that dribbles a basketball between its legs. Built for the HIM Arena sports robotics challenge. Play the dribble game, walk the build story, deploy it yourself.">
+<meta name="description" content="A Unitree G1 humanoid that dribbles a basketball between its legs. Built for the HIM Arena sports robotics challenge. Replay it in 3-D, see through its head camera, walk the build story, deploy it yourself.">
 <meta property="og:title" content="G1 Brunson — a humanoid that dribbles between its legs">
 <meta property="og:description" content="44 crossovers in 20 seconds, zero falls, sees the ball with its own head camera. Built for the HIM Arena sports robotics challenge.">
 <meta property="og:image" content="https://dribble.tenacelabs.com/frame.jpg">
@@ -54,7 +54,8 @@ nav .wrap{display:flex;align-items:center;gap:14px;height:58px}
 nav .logo{font-weight:800;display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--ink)}
 nav .logo i{width:18px;height:18px;border-radius:50%;background:var(--orange);display:inline-block;box-shadow:inset -3px -3px 0 rgba(0,0,0,.25);animation:bounce 1.2s infinite}
 @keyframes bounce{0%,100%{transform:translateY(-4px)}50%{transform:translateY(4px)}}
-nav ul{list-style:none;display:flex;gap:4px;margin:0 0 0 auto;padding:0;overflow-x:auto}
+nav ul{list-style:none;display:flex;gap:4px;margin:0 0 0 auto;padding:0;overflow-x:auto;scrollbar-width:none}
+nav ul::-webkit-scrollbar{display:none}
 nav li a{text-decoration:none;color:var(--ink);font-size:.9rem;font-weight:600;padding:.4em .7em;border-radius:999px;white-space:nowrap}
 nav li a.on,nav li a:hover{background:var(--ink);color:#fff}
 #progress{position:absolute;left:0;bottom:-1px;height:3px;background:linear-gradient(90deg,var(--orange),var(--blue));width:0}
@@ -74,16 +75,25 @@ nav li a.on,nav li a:hover{background:var(--ink);color:#fff}
 h1:hover .wobble{transform:rotate(-6deg) scale(1.06)}
 .o{color:var(--orange)}.b{color:var(--blue)}
 
-/* game */
-#game .card{padding:0;overflow:hidden}
-#court{display:block;width:100%;background:#1c2233;touch-action:manipulation}
-.gamebar{display:flex;align-items:center;gap:10px;padding:14px 18px;flex-wrap:wrap;border-top:1px solid var(--line)}
-.gamebar .score{font-family:"JetBrains Mono",monospace;font-size:1rem}
-.gamebar .score b{font-size:1.4rem;color:var(--orange)}
-.hands{display:flex;gap:10px;margin-left:auto}
-.hand{width:64px;height:64px;border-radius:50%;border:3px solid var(--ink);background:#fff;font-weight:800;font-size:1.2rem;cursor:pointer;user-select:none;display:grid;place-items:center;transition:transform .06s,background .1s}
-.hand:active,.hand.lit{background:var(--orange);transform:scale(.94)}
-#gamemsg{font-weight:600;min-height:1.4em}
+/* replay */
+#replay .card{padding:0;overflow:hidden}
+#stage{position:relative;background:#0e1424;height:520px}
+#stage canvas{display:block;width:100%;height:100%}
+@media(max-width:700px){#stage{height:380px}}
+#stage .hud{position:absolute;left:14px;top:12px;display:flex;gap:8px;flex-wrap:wrap;pointer-events:none}
+#stage .hud span{background:rgba(0,0,0,.55);color:#fff;font-family:"JetBrains Mono",monospace;font-size:.72rem;padding:.3em .6em;border-radius:6px}
+#stage .hud b{color:var(--orange)}
+#stage .loading{position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-family:"JetBrains Mono",monospace;font-size:.85rem;background:#0e1424}
+.rbar{display:flex;align-items:center;gap:10px;padding:12px 16px;flex-wrap:wrap;border-top:1px solid var(--line)}
+.rbar .seg button{padding:.45em .8em;font-size:.85rem}
+.scrub{position:relative;flex:1;min-width:220px;height:34px}
+.scrub input{position:absolute;inset:0;width:100%;margin:0;z-index:2;background:transparent}
+.scrub .ticks{position:absolute;left:8px;right:8px;top:50%;height:0;z-index:1}
+.scrub .ticks i{position:absolute;top:-9px;width:3px;height:18px;border-radius:2px;background:#c9c2b2;transform:translateX(-1px)}
+.scrub .ticks i.gap{background:var(--orange)}
+.icon{width:40px;height:40px;border-radius:50%;border:2px solid var(--ink);background:var(--ink);color:#fff;font-size:1rem;display:grid;place-items:center;cursor:pointer}
+.icon.ghost{background:transparent;color:var(--ink)}
+.tips{display:flex;gap:14px;flex-wrap:wrap;margin-top:12px;font-size:.85rem;color:var(--muted)}
 
 /* timeline */
 .tl{display:grid;grid-template-columns:260px 1fr;gap:22px}
@@ -110,13 +120,19 @@ h1:hover .wobble{transform:rotate(-6deg) scale(1.06)}
 .scorebox small{display:block;font-size:.85rem;font-weight:400;opacity:.85;font-family:"Bricolage Grotesque",sans-serif}
 
 /* vision */
-.vis{position:relative;border-radius:var(--r);overflow:hidden;border:1px solid var(--line);background:#000}
-.vis canvas{display:block;width:100%}
+.vis{position:relative;border-radius:var(--r);overflow:hidden;border:1px solid var(--line);background:#000;aspect-ratio:424/240}
+.vis img{display:block;width:100%;height:100%;image-rendering:auto}
 .vis .lbl{position:absolute;left:12px;top:12px;font-family:"JetBrains Mono",monospace;font-size:.72rem;color:#fff;background:rgba(0,0,0,.55);padding:.3em .6em;border-radius:6px}
+.vis .lbl2{position:absolute;right:12px;bottom:12px;font-family:"JetBrains Mono",monospace;font-size:.72rem;color:#fff;background:rgba(0,0,0,.55);padding:.3em .6em;border-radius:6px}
 .seg{display:inline-flex;border:2px solid var(--ink);border-radius:999px;overflow:hidden}
 .seg button{border:0;background:transparent;font:inherit;font-weight:600;padding:.5em 1em;cursor:pointer}
 .seg button.on{background:var(--ink);color:#fff}
 input[type=range]{width:100%;accent-color:var(--orange)}
+.visgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.visgrid div{border-radius:10px;overflow:hidden;border:2px solid transparent;cursor:pointer;background:#000;aspect-ratio:424/240}
+.visgrid div.on{border-color:var(--orange)}
+.visgrid img{display:block;width:100%;height:100%}
+.visgrid small{display:block;text-align:center;font-size:.7rem;color:var(--muted);padding:2px 0}
 
 /* spec flip cards */
 .flip{perspective:900px;height:150px;cursor:pointer}
@@ -141,15 +157,14 @@ pre .copy{position:absolute;right:8px;top:8px;background:#fff;color:var(--ink);b
 .check input{width:20px;height:20px;accent-color:var(--ok)}
 
 /* brunson */
-#brunson{background:var(--navy);color:#fff}
+#brunson{background:var(--navy);color:#fff;padding:44px 0}
 #brunson .eyebrow{color:var(--orange);background:rgba(245,132,38,.15)}
-#brunson .card{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.14);color:#fff;box-shadow:none}
-.jersey{width:210px;height:250px;margin:0 auto;position:relative;cursor:pointer;user-select:none}
-.jersey svg{width:100%;height:100%;filter:drop-shadow(0 12px 24px rgba(0,0,0,.4));transition:transform .2s}
-.jersey:hover svg{transform:rotate(-3deg) scale(1.03)}
+#brunson .row{display:flex;gap:22px;align-items:center;flex-wrap:wrap}
+#brunson p{margin:.3em 0}
+.jersey{width:110px;height:130px;flex:none;cursor:pointer;user-select:none}
+.jersey svg{width:100%;height:100%;filter:drop-shadow(0 8px 16px rgba(0,0,0,.4));transition:transform .2s}
+.jersey:hover svg{transform:rotate(-4deg) scale(1.05)}
 .confetti{position:fixed;inset:0;pointer-events:none;z-index:99}
-.quote{font-size:1.4rem;font-weight:600;line-height:1.3}
-.namegen{font-family:"JetBrains Mono",monospace;background:rgba(0,0,0,.35);border-radius:12px;padding:14px;min-height:3.2em}
 
 /* arena */
 .arena-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
@@ -164,6 +179,7 @@ footer{padding:40px 0;border-top:1px solid var(--line);font-size:.9rem;color:var
 .reveal{opacity:0;transform:translateY(18px);transition:opacity .5s,transform .5s}
 .reveal.in{opacity:1;transform:none}
 </style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
 </head>
 <body>
 
@@ -171,7 +187,7 @@ footer{padding:40px 0;border-top:1px solid var(--line);font-size:.9rem;color:var
   <div class="wrap">
     <a class="logo" href="#hero"><i></i> G1 Brunson</a>
     <ul>
-      <li><a href="#game">Play</a></li>
+      <li><a href="#replay">Replay</a></li>
       <li><a href="#story">Story</a></li>
       <li><a href="#reward">Reward</a></li>
       <li><a href="#vision">Vision</a></li>
@@ -196,7 +212,7 @@ footer{padding:40px 0;border-top:1px solid var(--line);font-size:.9rem;color:var
         <div class="stat"><b>0.31 s</b><span>per bounce</span></div>
         <div class="stat"><b data-count="0">0</b><span>falls in 12 tests</span></div>
       </div>
-      <a class="btn orange" href="#game">Try to beat it ↓</a>
+      <a class="btn orange" href="#replay">Fly around it in 3-D ↓</a>
       <a class="btn ghost" href="https://github.com/AmoghShrivastava/g1-brunson" target="_blank" rel="noopener">Code on GitHub</a>
     </div>
     <div class="hero-video">
@@ -206,22 +222,25 @@ footer{padding:40px 0;border-top:1px solid var(--line);font-size:.9rem;color:var
   </div>
 </section>
 
-<!-- ============ GAME ============ -->
-<section id="game">
+<!-- ============ REPLAY ============ -->
+<section id="replay">
   <div class="wrap">
-    <span class="eyebrow">01 · Play</span>
-    <h2>Can you out-dribble a robot?</h2>
-    <p>Same rules the robot was trained on. Push the ball with the hand it is in, catch it with the other hand when it comes through. Twenty seconds. Brunson averages <b>44</b>. Most humans with a keyboard get about 25.</p>
+    <span class="eyebrow">01 · 3-D replay</span>
+    <h2>Fly around the real thing.</h2>
+    <p>This is the recorded test episode, not an animation: the actual G1 meshes from Unitree's robot description, driven by the joint angles the controller produced, frame by frame. Drag to orbit, scroll to zoom, scrub the timeline. Orange ticks are bounces that landed between the feet.</p>
     <div class="card reveal">
-      <canvas id="court" width="1000" height="440"></canvas>
-      <div class="gamebar">
-        <button class="btn orange" id="startBtn">Start 20 s</button>
-        <div class="score">crossovers <b id="sc">0</b> · chained <b id="ch">0</b> · <span id="clock">20.0</span>s</div>
-        <div id="gamemsg" class="muted">Press <kbd>A</kbd> for the left hand, <kbd>L</kbd> for the right hand, or tap the buttons.</div>
-        <div class="hands"><div class="hand" id="hl">L</div><div class="hand" id="hr">R</div></div>
+      <div id="stage">
+        <div class="hud"><span>t = <b id="rT">0.0</b> s</span><span>crossovers so far <b id="rX">0</b></span><span id="rCam">free camera</span></div>
+        <div class="loading" id="rLoad">loading meshes…</div>
+      </div>
+      <div class="rbar">
+        <button class="icon" id="rPlay" title="play / pause">▶</button>
+        <div class="scrub"><div class="ticks" id="rTicks"></div><input type="range" id="rScrub" min="0" max="499" value="0"></div>
+        <div class="seg" id="rSpeed"><button data-s="0.25">¼×</button><button data-s="0.5">½×</button><button class="on" data-s="1">1×</button></div>
+        <div class="seg" id="rCams"><button class="on" data-c="orbit">Orbit</button><button data-c="low">Court-side</button><button data-c="ball">Follow ball</button><button data-c="head">Head cam</button></div>
       </div>
     </div>
-    <p class="muted" style="margin-top:12px">Why it is hard: a crossover only counts if the bounce lands in the gap between the feet, the ball rose to at least 0.30 m first, and the other hand plays it next. Press early and the ball never gets high enough. Press late and it rolls away. The robot had 720 million practice bounces to find the timing.</p>
+    <div class="tips"><span>🖱 drag to orbit · wheel to zoom · right-drag to pan</span><span>⌨ <kbd>space</kbd> play/pause · <kbd>←</kbd> <kbd>→</kbd> step one frame</span><span>Head cam is the D435 pose from the URDF, so this is the viewpoint the perception module gets.</span></div>
   </div>
 </section>
 
@@ -273,19 +292,26 @@ footer{padding:40px 0;border-top:1px solid var(--line);font-size:.9rem;color:var
   <div class="wrap">
     <span class="eyebrow">04 · Perception</span>
     <h2>What the robot sees.</h2>
-    <p>The G1 has a small depth camera in its head, tilted down. The robot renders what its <em>own body</em> should look like from its joint angles, subtracts that from the depth image, and whatever is left over and closer than its own body is the ball. Drag the slider.</p>
+    <p>These frames are rendered by MuJoCo from the robot's head camera during the recorded test, then run through the shipped perception module. Nothing here is illustrated by hand. Pick a stream, scrub through time, or press play.</p>
     <div class="grid g2 reveal" style="align-items:start">
       <div>
-        <div class="vis"><canvas id="visc" width="580" height="386"></canvas><span class="lbl" id="vislbl">head camera · colour</span></div>
-        <div style="display:flex;gap:12px;align-items:center;margin-top:12px;flex-wrap:wrap">
-          <div class="seg" id="visseg"><button class="on" data-m="0">Colour</button><button data-m="1">Depth</button><button data-m="2">Self mask</button><button data-m="3">Ball found</button></div>
-          <label style="flex:1;min-width:160px;font-size:.85rem">time <input type="range" id="vist" min="0" max="100" value="30"></label>
+        <div class="vis"><img id="visImg" alt="head camera frame"><span class="lbl" id="vislbl">colour stream · 424×240</span><span class="lbl2" id="visinfo"></span></div>
+        <div style="display:flex;gap:10px;align-items:center;margin-top:12px;flex-wrap:wrap">
+          <button class="icon ghost" id="visPlay" title="play">▶</button>
+          <label style="flex:1;min-width:160px;font-size:.85rem">time <input type="range" id="vist" min="0" max="79" value="0"></label>
+        </div>
+        <div class="visgrid" id="visgrid">
+          <div class="on" data-m="rgb"><img alt=""><small>1 · colour</small></div>
+          <div data-m="depth"><img alt=""><small>2 · depth</small></div>
+          <div data-m="mask"><img alt=""><small>3 · minus own body</small></div>
+          <div data-m="det"><img alt=""><small>4 · ball found</small></div>
         </div>
       </div>
       <div class="grid" style="gap:12px">
-        <div class="card"><b>Why depth, not colour</b><p style="margin:0">Orange balls look grey in bad light and a court floor can be orange. Depth does not care about lighting, and the ball's size is known, so a sphere is fitted straight onto the pixels.</p></div>
-        <div class="card"><b>When the ball vanishes</b><p style="margin:0">Under the body the camera cannot see it. A tracker carries it through with a bounce model, the same way you know where the ball is when you look up.</p></div>
-        <div class="card"><b>The clever bit</b><p style="margin:0">That exact tracker, noise and dropouts included, was copied into the training simulation. The robot practised on what the camera would actually tell it, not on perfect information. Camera-in-the-loop: <b>41.8</b> crossovers vs 44.3 with perfect information.</p></div>
+        <div class="card"><b>1 → 2: depth, not colour</b><p style="margin:0">The D435's depth stream is the primary sensor (87° × 58°, wider than the colour stream). Near is bright. It does not care about lighting or floor colour.</p></div>
+        <div class="card"><b>2 → 3: subtract yourself</b><p style="margin:0">The robot renders what its own body should look like from its joint angles and removes it from the depth image. The floor cancels too. Whatever is left and closer than the body is the ball.</p></div>
+        <div class="card"><b>3 → 4: fit a sphere</b><p style="margin:0">A sphere of the known radius is fitted to the remaining pixels, giving the ball's centre to about 2 mm. When the ball is hidden under the body (white circle), a Kalman tracker with a bounce model carries it through.</p></div>
+        <div class="card"><b>In numbers, this clip</b><p style="margin:0" id="visSummary"></p></div>
       </div>
     </div>
   </div>
@@ -327,34 +353,19 @@ footer{padding:40px 0;border-top:1px solid var(--line);font-size:.9rem;color:var
 <!-- ============ BRUNSON ============ -->
 <section id="brunson">
   <div class="wrap">
-    <span class="eyebrow">08 · The name</span>
-    <h2>Why "Brunson"?</h2>
-    <div class="grid g2" style="align-items:center">
-      <div>
-        <p class="quote">Because the Knicks finally did it, and Jalen Brunson is the reason.</p>
-        <p>This project was built in the afterglow of the New York Knicks' championship run. Brunson is the guard who keeps the ball on a string, plays below the defender's hands, and never, ever looks rushed. That is exactly the behaviour we were trying to squeeze out of a 35-kilogram robot with rubber hands: low, tight, rhythmic, unbothered.</p>
-        <p>So the policy got a name instead of a version number. Every checkpoint before it is a letter of the alphabet. The one that finally dribbled like a point guard is <b>G1 Brunson</b>.</p>
-        <p class="muted" style="font-size:.85rem">Also, "G1" is the robot model and Brunson wears #11. Two ones. We noticed after naming it and decided it was fate.</p>
-        <div class="card" style="margin-top:14px">
-          <b>Name generator for your own robot</b>
-          <p class="muted" style="margin:.2em 0 .6em;font-size:.85rem">In case you also want to name a policy after a point guard.</p>
-          <div class="namegen" id="namegen">G1 Brunson</div>
-          <button class="btn orange" style="margin-top:10px" id="genBtn">Generate</button>
-        </div>
+    <div class="row">
+      <div class="jersey" id="jersey" title="click me">
+        <svg viewBox="0 0 210 250">
+          <path d="M55 10 L85 2 Q105 22 125 2 L155 10 L200 45 L175 80 L160 68 L160 240 L50 240 L50 68 L35 80 L10 45 Z" fill="#006BB6" stroke="#F58426" stroke-width="6" stroke-linejoin="round"/>
+          <text x="105" y="120" text-anchor="middle" font-family="Bricolage Grotesque,sans-serif" font-weight="800" font-size="26" fill="#F58426">BRUNSON</text>
+          <text x="105" y="205" text-anchor="middle" font-family="Bricolage Grotesque,sans-serif" font-weight="800" font-size="84" fill="#fff" stroke="#F58426" stroke-width="3">11</text>
+        </svg>
       </div>
-      <div style="text-align:center">
-        <div class="jersey" id="jersey" title="click me">
-          <svg viewBox="0 0 210 250">
-            <path d="M55 10 L85 2 Q105 22 125 2 L155 10 L200 45 L175 80 L160 68 L160 240 L50 240 L50 68 L35 80 L10 45 Z" fill="#006BB6" stroke="#F58426" stroke-width="6" stroke-linejoin="round"/>
-            <path d="M85 2 Q105 22 125 2" fill="none" stroke="#F58426" stroke-width="6"/>
-            <text x="105" y="120" text-anchor="middle" font-family="Bricolage Grotesque,sans-serif" font-weight="800" font-size="26" fill="#F58426">BRUNSON</text>
-            <text x="105" y="205" text-anchor="middle" font-family="Bricolage Grotesque,sans-serif" font-weight="800" font-size="84" fill="#fff" stroke="#F58426" stroke-width="3">11</text>
-          </svg>
-        </div>
-        <p class="muted" style="font-size:.85rem;margin-top:8px">click the jersey. you know you want to.</p>
-        <div class="card" style="text-align:left;margin-top:10px;font-size:.9rem">
-          <b>The uniform</b><p style="margin:0">During development the simulated robot wore a full Knicks kit, jersey and shorts, as separate garment meshes draped over the body. It was removed for the final renders so the judges could see the joints. It lives on in a folder called <code>uniform_assets</code>.</p>
-        </div>
+      <div style="flex:1;min-width:260px">
+        <span class="eyebrow">08 · The name</span>
+        <h3 style="font-size:1.4rem;font-weight:800;margin:.2em 0">Why "Brunson"?</h3>
+        <p>Built in the afterglow of the Knicks' championship run. Jalen Brunson keeps the ball low, tight and on a string, and never looks rushed. That is what we were trying to get out of a robot with rubber hands. G1 is the robot, Brunson wears 11. Two ones. We noticed after naming it.</p>
+        <p class="muted" style="font-size:.8rem;color:rgba(255,255,255,.6)">Click the jersey. Not affiliated with the NBA or the Knicks, just fans.</p>
       </div>
     </div>
   </div>
@@ -390,90 +401,6 @@ addEventListener('scroll',()=>{
 
 /* count-up stats */
 $$('[data-count]').forEach(el=>{const t=parseFloat(el.dataset.count);let s=null;const step=ts=>{if(!s)s=ts;const p=Math.min(1,(ts-s)/1200);el.textContent=(t*(1-Math.pow(1-p,3))).toFixed(t%1?1:0);if(p<1)requestAnimationFrame(step)};requestAnimationFrame(step)});
-
-/* ---------- DRIBBLE GAME ---------- */
-(()=>{
-  const cv=$('#court'),cx=cv.getContext('2d'),W=cv.width,H=cv.height;
-  const FLOOR=H-40, SCALE=380; // px per metre
-  const LX=W/2-150, RX=W/2+150, HANDY=FLOOR-0.55*SCALE; // hand positions
-  const FEET=[W/2-70,W/2+70];
-  const R=0.119*SCALE, G=9.81*SCALE;
-  let ball, hand, expect, apex, score, chain, lastCatch, t, running=false, msg='', flash=0, last=0, hist=[];
-  function reset(){ball={x:LX,y:HANDY,vx:0,vy:0,held:true};hand='L';expect=false;apex=0;score=0;chain=0;lastCatch=false;t=20;msg='';hist=[];}
-  reset();
-  function push(side){
-    if(!running)return;
-    const hx=side==='L'?LX:RX, sign=side==='L'?1:-1;
-    const near=Math.hypot(ball.x-hx,ball.y-HANDY)<R*1.6+30;
-    if(!near){msg=side===hand?'the ball is not in that hand yet':'ball is not there';flash=8;return;}
-    if(side!==hand){msg='wrong hand: −3';score=Math.max(0,score-3);chain=0;lastCatch=false;flash=8;return;}
-    if(expect){msg='already released, wait for the bounce';flash=8;return;}
-    // launch through the gap toward the other hand
-    ball.held=false;ball.vx=sign*1.55*SCALE;ball.vy=1.9*SCALE;ball.x=hx+sign*10;ball.y=HANDY;
-    expect=true;apex=FLOOR-ball.y;
-    $('#'+(side==='L'?'hl':'hr')).classList.add('lit');setTimeout(()=>$('#'+(side==='L'?'hl':'hr')).classList.remove('lit'),120);
-  }
-  function step(dt){
-    if(!running)return;
-    t-=dt;if(t<=0){t=0;running=false;msg=score>=44?'You beat Brunson. Seriously.':score>=30?'Respectable. Brunson still wins.':'Brunson: 44. You: '+score+'. Robots, huh.';$('#startBtn').disabled=false;$('#startBtn').textContent='Play again';}
-    if(!ball.held){
-      ball.vy+=G*dt;ball.x+=ball.vx*dt;ball.y+=ball.vy*dt;
-      apex=Math.max(apex,FLOOR-ball.y);
-      if(ball.y+R>=FLOOR){
-        ball.y=FLOOR-R;
-        const inGap=ball.x>FEET[0]+8&&ball.x<FEET[1]-8;
-        const highEnough=apex>=0.30*SCALE+R;
-        if(expect){
-          if(inGap&&highEnough){score+=3;msg='crossover +3'+(lastCatch?'  chained +2':'');if(lastCatch){score+=2;chain++;}ball.vy=-ball.vy*0.85;hand=hand==='L'?'R':'L';expect=false;lastCatch=true;flash=10;hist.push(1);}
-          else{msg=inGap?'too low (apex < 0.30 m): bad bounce −1':'missed the gap: bad bounce −1';score=Math.max(0,score-1);ball.vy=-ball.vy*0.85;hand=hand==='L'?'R':'L';expect=false;lastCatch=false;chain=0;flash=10;hist.push(0);}
-        } else {ball.vy=-ball.vy*0.8;}
-        ball.vx*=0.98;apex=0;
-      }
-      // catch: ball reaches receiving hand zone on the way up
-      const hx=hand==='L'?LX:RX;
-      if(!expect&&ball.vy<0&&Math.hypot(ball.x-hx,ball.y-HANDY)<R*1.6+30){ball.held=true;ball.x=hx;ball.y=HANDY;ball.vx=ball.vy=0;if(lastCatch){}}
-      if(ball.x<-R||ball.x>W+R||(Math.abs(ball.vy)<5&&ball.y>FLOOR-R-1&&!ball.held&&!expect&&Math.abs(ball.vx)<3)){msg='ball rolled away: −5, new ball';score=Math.max(0,score-5);chain=0;lastCatch=false;ball={x:hand==='L'?LX:RX,y:HANDY,vx:0,vy:0,held:true};expect=false;flash=10;}
-    }
-  }
-  function draw(){
-    cx.clearRect(0,0,W,H);
-    // court
-    cx.fillStyle='#22283a';cx.fillRect(0,0,W,H);cx.fillStyle='#c8873f';cx.fillRect(0,FLOOR,W,H-FLOOR);
-    cx.strokeStyle='rgba(255,255,255,.08)';for(let i=0;i<W;i+=50){cx.beginPath();cx.moveTo(i,FLOOR);cx.lineTo(i,H);cx.stroke()}
-    // gap marker
-    cx.fillStyle=flash>0&&msg.startsWith('crossover')?'rgba(46,158,91,.35)':'rgba(255,255,255,.08)';cx.fillRect(FEET[0],FLOOR-6,FEET[1]-FEET[0],6);
-    // robot: simple figure
-    const legTop=FLOOR-0.9*SCALE;
-    cx.lineCap='round';cx.lineWidth=22;cx.strokeStyle='#d9d9d9';
-    cx.beginPath();cx.moveTo(W/2,legTop);cx.lineTo(FEET[0],FLOOR-8);cx.stroke();
-    cx.beginPath();cx.moveTo(W/2,legTop);cx.lineTo(FEET[1],FLOOR-8);cx.stroke();
-    cx.lineWidth=30;cx.beginPath();cx.moveTo(W/2,legTop);cx.lineTo(W/2,legTop-0.32*SCALE);cx.stroke();
-    cx.fillStyle='#e6e6e6';cx.beginPath();cx.arc(W/2,legTop-0.32*SCALE-34,26,0,7);cx.fill();
-    cx.fillStyle='#F58426';cx.fillRect(W/2-14,legTop-0.32*SCALE-40,28,8);
-    // arms
-    cx.lineWidth=16;cx.strokeStyle='#cfcfcf';
-    cx.beginPath();cx.moveTo(W/2-15,legTop-0.28*SCALE);cx.lineTo(LX+20,HANDY);cx.stroke();
-    cx.beginPath();cx.moveTo(W/2+15,legTop-0.28*SCALE);cx.lineTo(RX-20,HANDY);cx.stroke();
-    // hands
-    for(const [x,s] of [[LX,'L'],[RX,'R']]){cx.fillStyle=hand===s&&!expect?'#F58426':'#fff';cx.beginPath();cx.arc(x,HANDY,16,0,7);cx.fill();cx.fillStyle='#111';cx.font='bold 13px JetBrains Mono';cx.textAlign='center';cx.fillText(s,x,HANDY+5);}
-    // 0.30 m line
-    cx.strokeStyle='rgba(255,255,255,.25)';cx.setLineDash([6,6]);cx.lineWidth=1;cx.beginPath();cx.moveTo(0,FLOOR-0.30*SCALE-R);cx.lineTo(W,FLOOR-0.30*SCALE-R);cx.stroke();cx.setLineDash([]);
-    cx.fillStyle='rgba(255,255,255,.5)';cx.font='11px JetBrains Mono';cx.textAlign='left';cx.fillText('apex must reach 0.30 m',8,FLOOR-0.30*SCALE-R-6);
-    // ball
-    cx.fillStyle='#F58426';cx.beginPath();cx.arc(ball.x,ball.y,R,0,7);cx.fill();
-    cx.strokeStyle='#3a1d08';cx.lineWidth=2;cx.beginPath();cx.moveTo(ball.x-R,ball.y);cx.lineTo(ball.x+R,ball.y);cx.moveTo(ball.x,ball.y-R);cx.lineTo(ball.x,ball.y+R);cx.stroke();
-    // message
-    if(msg){cx.fillStyle=flash>0?'#fff':'rgba(255,255,255,.7)';cx.font='600 18px Bricolage Grotesque';cx.textAlign='center';cx.fillText(msg,W/2,40)}
-    if(!running&&t===20){cx.fillStyle='rgba(255,255,255,.75)';cx.font='600 20px Bricolage Grotesque';cx.textAlign='center';cx.fillText('press Start, then alternate hands',W/2,80)}
-    flash=Math.max(0,flash-1);
-    $('#sc').textContent=score;$('#ch').textContent=chain;$('#clock').textContent=t.toFixed(1);
-  }
-  function loop(ts){const dt=Math.min(.033,(ts-last)/1000||0);last=ts;step(dt);draw();requestAnimationFrame(loop)}
-  requestAnimationFrame(loop);
-  $('#startBtn').onclick=()=>{reset();running=true;$('#startBtn').disabled=true;$('#startBtn').textContent='Go!';msg='';};
-  $('#hl').onpointerdown=()=>push('L');$('#hr').onpointerdown=()=>push('R');
-  addEventListener('keydown',e=>{if(e.repeat)return;const k=e.key.toLowerCase();if(k==='a'){push('L');e.preventDefault()}if(k==='l'){push('R');e.preventDefault()}});
-})();
 
 /* ---------- STORY TIMELINE ---------- */
 const RUNS=[
@@ -559,42 +486,22 @@ function scoreIt(){
 }
 scoreIt();
 
-/* ---------- VISION DEMO ---------- */
+/* ---------- VISION: real head-camera frames ---------- */
 (()=>{
-  const c=$('#visc'),x=c.getContext('2d'),W=c.width,H=c.height;let mode=0,t=.3;
-  const lbls=['head camera · colour','head camera · depth (near = bright)','depth minus the robot\'s own body','sphere fitted → ball found'];
-  function ballPos(t){const ph=t*Math.PI*2*1.3;const bx=W/2+Math.sin(ph)*150;const by=H*0.62-Math.abs(Math.cos(ph))*90;return [bx,by,Math.abs(Math.cos(ph))]}
-  function draw(){
-    x.clearRect(0,0,W,H);
-    const [bx,by,hgt]=ballPos(t);const r=38-hgt*8;
-    const hidden=Math.abs(bx-W/2)<40&&hgt<.4; // under the body
-    if(mode===0){
-      const g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,'#3b3f4a');g.addColorStop(1,'#a06a3c');x.fillStyle=g;x.fillRect(0,0,W,H);
-      x.fillStyle='#c8873f';x.fillRect(0,H*.55,W,H);x.strokeStyle='rgba(255,255,255,.15)';for(let i=0;i<W;i+=40){x.beginPath();x.moveTo(i,H*.55);x.lineTo(i-40,H);x.stroke()}
-      body('#cfcfcf','#9a9a9a');
-      if(!hidden){x.fillStyle='#e0762a';x.beginPath();x.arc(bx,by,r,0,7);x.fill();x.strokeStyle='#4a2508';x.lineWidth=2;x.beginPath();x.moveTo(bx-r,by);x.lineTo(bx+r,by);x.moveTo(bx,by-r);x.lineTo(bx,by+r);x.stroke()}
-    } else if(mode===1){
-      x.fillStyle='#222';x.fillRect(0,0,W,H);const g=x.createLinearGradient(0,H*.5,0,H);g.addColorStop(0,'#333');g.addColorStop(1,'#bbb');x.fillStyle=g;x.fillRect(0,H*.5,W,H);
-      body('#ddd','#ddd');
-      if(!hidden){x.fillStyle=`rgb(${230-hgt*40},${230-hgt*40},${230-hgt*40})`;x.beginPath();x.arc(bx,by,r,0,7);x.fill()}
-      noise();
-    } else if(mode===2){
-      x.fillStyle='#000';x.fillRect(0,0,W,H);
-      if(!hidden){x.fillStyle='#fff';x.beginPath();x.arc(bx,by,r,0,7);x.fill()}
-      noise(.35);
-      x.fillStyle='rgba(255,255,255,.5)';x.font='12px JetBrains Mono';x.fillText('own body removed · floor removed · what remains is closer than the body',10,H-12);
-    } else {
-      x.fillStyle='#0b1b33';x.fillRect(0,0,W,H);body('#2a3b55','#2a3b55');
-      if(!hidden){x.strokeStyle='#F58426';x.lineWidth=3;x.beginPath();x.arc(bx,by,r+4,0,7);x.stroke();x.fillStyle='#F58426';x.font='12px JetBrains Mono';x.fillText(`ball  r=0.119 m  err≈3 mm`,bx+r+10,by-4)}
-      else{x.strokeStyle='#F58426';x.setLineDash([5,5]);x.lineWidth=2;x.beginPath();x.arc(bx,by,r+4,0,7);x.stroke();x.setLineDash([]);x.fillStyle='#F58426';x.font='12px JetBrains Mono';x.fillText('occluded → Kalman prediction',bx+r+10,by-4)}
-    }
-    function body(fill,dark){x.fillStyle=fill;x.beginPath();x.roundRect(W/2-70,H*.15,140,H*.45,30);x.fill();x.fillStyle=dark;x.beginPath();x.roundRect(W/2-60,H*.55,45,H*.5,14);x.fill();x.beginPath();x.roundRect(W/2+15,H*.55,45,H*.5,14);x.fill();x.fillStyle=fill;x.beginPath();x.roundRect(30,H*.2,50,120,20);x.fill();x.beginPath();x.roundRect(W-80,H*.2,50,120,20);x.fill()}
-    function noise(a=.12){x.fillStyle=`rgba(255,255,255,${a})`;for(let i=0;i<120;i++){x.fillRect(Math.random()*W,Math.random()*H,2,2)}}
-    $('#vislbl').textContent=lbls[mode];
-  }
-  $$('#visseg button').forEach(b=>b.onclick=()=>{mode=+b.dataset.m;$$('#visseg button').forEach(o=>o.classList.toggle('on',o===b));draw()});
-  $('#vist').oninput=e=>{t=e.target.value/100;draw()};
-  draw();
+  const N=80, modes=['rgb','depth','mask','det'], lbl={rgb:'colour stream · 424×240',depth:'depth stream · 87°×58° · near = bright',mask:'depth minus own body and floor',det:'sphere fit + tracker'};
+  let mode='rgb', i=0, playing=false, meta=null;
+  const img=$('#visImg'), cache={};
+  const src=(m,k)=>`vis/${m}_${k}.webp`;
+  function show(){img.src=src(mode,i);$('#vislbl').textContent=lbl[mode];$$('#visgrid div').forEach(d=>{d.classList.toggle('on',d.dataset.m===mode);d.querySelector('img').src=src(d.dataset.m,i)});
+    if(meta){const f=meta.frames[i];$('#visinfo').textContent=`t=${f.t.toFixed(2)} s · ${f.seen?f.src+' detection':'occluded → tracker'}${f.err_mm!=null?' · tracker error '+f.err_mm+' mm':''}`}}
+  $$('#visgrid div').forEach(d=>d.onclick=()=>{mode=d.dataset.m;show()});
+  $('#vist').oninput=e=>{i=+e.target.value;show()};
+  let timer=null;
+  $('#visPlay').onclick=()=>{playing=!playing;$('#visPlay').textContent=playing?'❚❚':'▶';if(playing)timer=setInterval(()=>{i=(i+1)%N;$('#vist').value=i;show()},110);else clearInterval(timer)};
+  fetch('vis/frames.json').then(r=>r.json()).then(j=>{meta=j;const s=j.summary;$('#visSummary').textContent=`Ball found on ${Math.round(s.detection_rate*100)} % of frames, all by the depth detector. Detection error ${(s.mean_detection_error_m*1000).toFixed(1)} mm; tracker error ${(s.mean_estimate_error_m*1000).toFixed(0)} mm including the frames where the ball is hidden.`;show()});
+  // preload
+  modes.forEach(m=>{for(let k=0;k<N;k++){const im=new Image();im.src=src(m,k);cache[m+k]=im}});
+  show();
 })();
 
 /* ---------- SPEC CARDS ---------- */
@@ -677,19 +584,75 @@ function showStep(i){
 function markDone(){STEPS.forEach((s,i)=>{const ids=[...s.h.matchAll(/data-c="(\w+)"/g)].map(m=>m[1]);$$('.step')[i].classList.toggle('done',ids.length&&ids.every(id=>checks[id]))})}
 showStep(0);
 
-/* ---------- BRUNSON: confetti + name generator ---------- */
+/* ---------- BRUNSON: confetti ---------- */
 (()=>{
   const c=$('#confetti'),x=c.getContext('2d');let parts=[];
   function size(){c.width=innerWidth;c.height=innerHeight}size();addEventListener('resize',size);
   function burst(){for(let i=0;i<160;i++)parts.push({x:innerWidth/2+(Math.random()-.5)*300,y:innerHeight*.6,vx:(Math.random()-.5)*14,vy:-Math.random()*16-4,c:Math.random()<.5?'#F58426':'#006BB6',r:Math.random()*6+3,a:1,rot:Math.random()*6})}
-  function tick(){x.clearRect(0,0,c.width,c.height);parts.forEach(p=>{p.vy+=.35;p.x+=p.vx;p.y+=p.vy;p.a-=.008;p.rot+=.1;x.save();x.translate(p.x,p.y);x.rotate(p.rot);x.globalAlpha=Math.max(0,p.a);x.fillStyle=p.c;x.fillRect(-p.r,-p.r/2,p.r*2,p.r);x.restore()});parts=parts.filter(p=>p.a>0);requestAnimationFrame(tick)}tick();
-  const j=$('#jersey');let clicks=0;const cheers=['BING BONG','GO NEW YORK GO','clutch.','Villanova connection','11 on the back, 44 on the stat sheet','okay that is enough confetti','…one more'];
-  j.onclick=()=>{burst();$('#jersey').nextElementSibling.textContent=cheers[clicks++%cheers.length]};
-  const first=['G1','H1','B2','Go2','Atlas','Figure','Optimus','Digit','Unitree','Apollo'];
-  const guards=['Brunson','Haliburton','Curry','Kyrie','Nash','Iverson','Rondo','Paul','Maravich','Kidd','Isiah','Doncic','SGA','Trae','Ja'];
-  const suffix=['','',' Jr.',' (rookie)',' v2',' but low',' with rubber hands',' feat. Kalman filter'];
-  $('#genBtn').onclick=()=>{const n=first[Math.random()*first.length|0]+' '+guards[Math.random()*guards.length|0]+suffix[Math.random()*suffix.length|0];const el=$('#namegen');el.textContent='';let i=0;const iv=setInterval(()=>{el.textContent=n.slice(0,++i);if(i>=n.length)clearInterval(iv)},28)};
+  function tick(){if(parts.length){x.clearRect(0,0,c.width,c.height);parts.forEach(p=>{p.vy+=.35;p.x+=p.vx;p.y+=p.vy;p.a-=.008;p.rot+=.1;x.save();x.translate(p.x,p.y);x.rotate(p.rot);x.globalAlpha=Math.max(0,p.a);x.fillStyle=p.c;x.fillRect(-p.r,-p.r/2,p.r*2,p.r);x.restore()});parts=parts.filter(p=>p.a>0);if(!parts.length)x.clearRect(0,0,c.width,c.height)}requestAnimationFrame(tick)}tick();
+  $('#jersey').onclick=burst;
 })();
+</script>
+<script type="module">
+import * as THREE from 'three';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const stage=$('#stage');
+const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.outputColorSpace=THREE.SRGBColorSpace;stage.prepend(renderer.domElement);
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x0e1424);scene.fog=new THREE.Fog(0x0e1424,6,14);
+const camera=new THREE.PerspectiveCamera(38,1,0.05,60);camera.position.set(2.3,1.3,2.0);
+const controls=new OrbitControls(camera,renderer.domElement);controls.target.set(0,0.55,0);controls.enableDamping=true;controls.maxPolarAngle=Math.PI/2-0.02;controls.minDistance=0.6;controls.maxDistance=8;
+scene.add(new THREE.HemisphereLight(0xdde6ff,0x223344,1.1));
+const sun=new THREE.DirectionalLight(0xffffff,2.2);sun.position.set(3,6,2);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);sun.shadow.camera.left=sun.shadow.camera.bottom=-3;sun.shadow.camera.right=sun.shadow.camera.top=3;sun.shadow.bias=-0.0005;scene.add(sun);
+// floor: court checker like the simulator
+const cv=document.createElement('canvas');cv.width=cv.height=512;const cx=cv.getContext('2d');for(let y=0;y<8;y++)for(let x=0;x<8;x++){cx.fillStyle=(x+y)%2?'#3d7fe0':'#2f66bd';cx.fillRect(x*64,y*64,64,64)}
+const ftex=new THREE.CanvasTexture(cv);ftex.wrapS=ftex.wrapT=THREE.RepeatWrapping;ftex.repeat.set(10,10);ftex.colorSpace=THREE.SRGBColorSpace;
+const floor=new THREE.Mesh(new THREE.PlaneGeometry(40,40),new THREE.MeshStandardMaterial({map:ftex,roughness:.9}));floor.rotation.x=-Math.PI/2;floor.receiveShadow=true;scene.add(floor);
+// z-up (MuJoCo) -> y-up (three)
+const world=new THREE.Group();world.rotation.x=-Math.PI/2;scene.add(world);
+const bodies={};let ball;
+const ballTex=new THREE.TextureLoader().load('replay/ball.jpg');ballTex.colorSpace=THREE.SRGBColorSpace;
+ball=new THREE.Mesh(new THREE.SphereGeometry(0.11926,40,28),new THREE.MeshStandardMaterial({map:ballTex,roughness:.75}));ball.castShadow=true;world.add(ball);
+const robotMat=new THREE.MeshStandardMaterial({color:0xe4e4e8,roughness:.55,metalness:.05});
+const accentMat=new THREE.MeshStandardMaterial({color:0xF58426,roughness:.5});
+let poses=null,meta=null,F=0,B=0;
+Promise.all([
+  new Promise(res=>new GLTFLoader().load('replay/g1.glb',res)),
+  fetch('replay/poses.bin').then(r=>r.arrayBuffer()),
+  fetch('replay/poses.json').then(r=>r.json())
+]).then(([g,buf,j])=>{
+  const meshes=[];g.scene.traverse(o=>{if(o.isMesh)meshes.push(o)});
+  meshes.forEach(o=>{o.geometry.deleteAttribute('color');o.geometry.computeVertexNormals();o.material=/wrist_yaw/.test(o.name)?accentMat:robotMat;o.castShadow=true;o.receiveShadow=true;const holder=new THREE.Group();holder.name=o.name;o.position.set(0,0,0);o.quaternion.identity();o.scale.set(1,1,1);holder.add(o);bodies[o.name]=holder;world.add(holder)});
+  poses=new Float32Array(buf);meta=j;F=j.frames;B=j.bodies.length;
+  const ticks=$('#rTicks');j.events.forEach(e=>{const i=document.createElement('i');i.style.left=(e.t/(F*j.dt)*100)+'%';if(e.gap)i.className='gap';ticks.appendChild(i)});
+  $('#rLoad').remove();setFrame(0);playing=true;$('#rPlay').textContent='❚❚';
+}).catch(e=>{$('#rLoad').textContent='could not load the 3-D replay: '+e.message;console.error(e)});
+let frame=0,playing=false,speed=1,acc=0,camMode='orbit',last=performance.now();
+const tq=new THREE.Quaternion(),tv=new THREE.Vector3();
+function setFrame(f){frame=((f%F)+F)%F;const base=frame*B*7;
+  meta.bodies.forEach((name,k)=>{const o=name==='ball'?ball:bodies[name];if(!o)return;const i=base+k*7;o.position.set(poses[i],poses[i+1],poses[i+2]);o.quaternion.set(poses[i+4],poses[i+5],poses[i+6],poses[i+3])});
+  $('#rScrub').value=frame;const t=frame*meta.dt;$('#rT').textContent=t.toFixed(1);$('#rX').textContent=meta.events.filter(e=>e.gap&&e.t<=t).length;}
+function headCam(){const torso=bodies['torso_link'];if(!torso)return;const p=0.8307767;const off=new THREE.Vector3(0.0576235,0.01753,0.42987),fwd=new THREE.Vector3(Math.cos(p),0,-Math.sin(p)),up=new THREE.Vector3(Math.sin(p),0,Math.cos(p));
+  torso.updateWorldMatrix(true,false);const pos=torso.localToWorld(off.clone());const look=torso.localToWorld(off.clone().add(fwd));const upw=up.clone().transformDirection(torso.matrixWorld);
+  camera.position.copy(pos);camera.up.copy(upw);camera.lookAt(look);camera.fov=42.5;camera.updateProjectionMatrix();}
+function animate(now){requestAnimationFrame(animate);const dt=(now-last)/1000;last=now;
+  if(meta){if(playing){acc+=dt*speed;while(acc>=meta.dt){acc-=meta.dt;setFrame(frame+1)}}
+    if(camMode==='head')headCam();else{if(camMode==='ball'){ball.getWorldPosition(tv);controls.target.lerp(tv,0.15)}controls.update()}}
+  renderer.render(scene,camera);}
+function resize(){const w=stage.clientWidth,h=stage.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()}
+new ResizeObserver(resize).observe(stage);resize();requestAnimationFrame(animate);
+window.__replay={setFrame:f=>setFrame(f),render:()=>{if(camMode==='head')headCam();controls.update();renderer.render(scene,camera)},cam:c=>$$('#rCams button').find(b=>b.dataset.c===c).click()};
+$('#rPlay').onclick=()=>{playing=!playing;$('#rPlay').textContent=playing?'❚❚':'▶'};
+$('#rScrub').oninput=e=>{if(meta)setFrame(+e.target.value)};
+$$('#rSpeed button').forEach(b=>b.onclick=()=>{speed=+b.dataset.s;$$('#rSpeed button').forEach(o=>o.classList.toggle('on',o===b))});
+$$('#rCams button').forEach(b=>b.onclick=()=>{camMode=b.dataset.c;$$('#rCams button').forEach(o=>o.classList.toggle('on',o===b));$('#rCam').textContent={orbit:'free camera',low:'court-side camera',ball:'following the ball',head:'head camera (D435 pose)'}[camMode];
+  if(camMode!=='head'){camera.up.set(0,1,0);camera.fov=38;camera.updateProjectionMatrix();controls.enabled=true;controls.target.set(0,0.55,0)}else controls.enabled=false;
+  if(camMode==='orbit'){camera.position.set(2.3,1.3,2.0)}if(camMode==='low'){camera.position.set(2.6,0.45,0.9);controls.target.set(0,0.35,0)}if(camMode==='ball'){camera.position.set(1.6,0.7,1.6)}});
+addEventListener('keydown',e=>{if(!meta||e.target.tagName==='INPUT')return;if(e.code==='Space'){e.preventDefault();$('#rPlay').click()}if(e.key==='ArrowRight'){playing=false;$('#rPlay').textContent='▶';setFrame(frame+1)}if(e.key==='ArrowLeft'){playing=false;$('#rPlay').textContent='▶';setFrame(frame-1)}});
+// pause when off-screen to save battery
+new IntersectionObserver(es=>{es.forEach(e=>{if(!e.isIntersecting&&playing){playing=false;$('#rPlay').textContent='▶';playing=false;$('#rPlay').dataset.auto='1'}else if(e.isIntersecting&&$('#rPlay').dataset.auto){playing=true;$('#rPlay').textContent='❚❚';delete $('#rPlay').dataset.auto}})},{threshold:.1}).observe(stage);
 </script>
 </body>
 </html>
