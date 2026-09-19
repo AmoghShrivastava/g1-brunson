@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>G1 Brunson</title>
+<meta name="description" content="A Unitree G1 humanoid that dribbles a basketball between its legs. Built for the HIM Arena sports robotics challenge. Play the dribble game, walk the build story, deploy it yourself.">
+<meta property="og:title" content="G1 Brunson — a humanoid that dribbles between its legs">
+<meta property="og:description" content="44 crossovers in 20 seconds, zero falls, sees the ball with its own head camera. Built for the HIM Arena sports robotics challenge.">
+<meta property="og:image" content="https://dribble.tenacelabs.com/frame.jpg">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%23F58426'/><path d='M5 50h90M50 5v90M20 18q30 32 60 0M20 82q30-32 60 0' stroke='%23222' stroke-width='5' fill='none'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --orange:#F58426; --blue:#006BB6; --navy:#0b1b33; --ink:#14161c; --paper:#fbf6ee; --cream:#f3ead9;
+  --ok:#2e9e5b; --bad:#d64545; --muted:#6b6f78; --line:#e6dcc6; --card:#fff; --shadow:0 10px 30px rgba(20,22,28,.08);
+  --r:18px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:"Bricolage Grotesque",system-ui,sans-serif;background:var(--paper);color:var(--ink);line-height:1.5;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;background:
+  radial-gradient(circle at 12% 8%, rgba(245,132,38,.16), transparent 32%),
+  radial-gradient(circle at 88% 92%, rgba(0,107,182,.14), transparent 34%);z-index:-1}
+a{color:var(--blue)}
+code,pre,.mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+h1,h2,h3{line-height:1.08;letter-spacing:-.01em;margin:0 0 .4em}
+h1{font-size:clamp(2.6rem,7vw,5.4rem);font-weight:800}
+h2{font-size:clamp(1.7rem,3.6vw,2.6rem);font-weight:800}
+h3{font-size:1.15rem;font-weight:600}
+p{margin:.4em 0 1em}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+.eyebrow{display:inline-block;font-family:"JetBrains Mono",monospace;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);background:rgba(0,107,182,.09);padding:.35em .7em;border-radius:999px;margin-bottom:1em}
+section{padding:72px 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:24px}
+.grid{display:grid;gap:18px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.btn{appearance:none;border:2px solid var(--ink);background:var(--ink);color:#fff;font:inherit;font-weight:600;padding:.6em 1.1em;border-radius:999px;cursor:pointer;transition:transform .08s,background .15s;user-select:none}
+.btn:hover{transform:translateY(-1px)}
+.btn:active{transform:translateY(1px) scale(.98)}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.orange{background:var(--orange);border-color:var(--orange);color:#1b1b1b}
+.btn.blue{background:var(--blue);border-color:var(--blue)}
+.btn:disabled{opacity:.5;cursor:default;transform:none}
+.pill{display:inline-block;padding:.2em .6em;border-radius:999px;font-size:.8rem;font-weight:600;background:var(--cream)}
+.muted{color:var(--muted)}
+kbd{font-family:"JetBrains Mono",monospace;font-size:.8em;border:1px solid #c9c2b2;border-bottom-width:3px;border-radius:6px;padding:.05em .45em;background:#fff}
+
+/* nav */
+nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(10px);background:rgba(251,246,238,.82);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;gap:14px;height:58px}
+nav .logo{font-weight:800;display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--ink)}
+nav .logo i{width:18px;height:18px;border-radius:50%;background:var(--orange);display:inline-block;box-shadow:inset -3px -3px 0 rgba(0,0,0,.25);animation:bounce 1.2s infinite}
+@keyframes bounce{0%,100%{transform:translateY(-4px)}50%{transform:translateY(4px)}}
+nav ul{list-style:none;display:flex;gap:4px;margin:0 0 0 auto;padding:0;overflow-x:auto}
+nav li a{text-decoration:none;color:var(--ink);font-size:.9rem;font-weight:600;padding:.4em .7em;border-radius:999px;white-space:nowrap}
+nav li a.on,nav li a:hover{background:var(--ink);color:#fff}
+#progress{position:absolute;left:0;bottom:-1px;height:3px;background:linear-gradient(90deg,var(--orange),var(--blue));width:0}
+
+/* hero */
+#hero{padding:60px 0 40px}
+#hero .grid{grid-template-columns:1.1fr 1fr;align-items:center}
+@media(max-width:860px){#hero .grid{grid-template-columns:1fr}}
+.hero-video{border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--line);background:#000;position:relative}
+.hero-video video{display:block;width:100%}
+.hero-video .tag{position:absolute;left:12px;top:12px;background:rgba(0,0,0,.6);color:#fff;font-family:"JetBrains Mono",monospace;font-size:.7rem;padding:.3em .6em;border-radius:6px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 14px;min-width:120px;box-shadow:var(--shadow)}
+.stat b{display:block;font-size:1.7rem;font-weight:800;line-height:1.1}
+.stat span{font-size:.78rem;color:var(--muted)}
+.wobble{display:inline-block;transition:transform .2s}
+h1:hover .wobble{transform:rotate(-6deg) scale(1.06)}
+.o{color:var(--orange)}.b{color:var(--blue)}
+
+/* game */
+#game .card{padding:0;overflow:hidden}
+#court{display:block;width:100%;background:#1c2233;touch-action:manipulation}
+.gamebar{display:flex;align-items:center;gap:10px;padding:14px 18px;flex-wrap:wrap;border-top:1px solid var(--line)}
+.gamebar .score{font-family:"JetBrains Mono",monospace;font-size:1rem}
+.gamebar .score b{font-size:1.4rem;color:var(--orange)}
+.hands{display:flex;gap:10px;margin-left:auto}
+.hand{width:64px;height:64px;border-radius:50%;border:3px solid var(--ink);background:#fff;font-weight:800;font-size:1.2rem;cursor:pointer;user-select:none;display:grid;place-items:center;transition:transform .06s,background .1s}
+.hand:active,.hand.lit{background:var(--orange);transform:scale(.94)}
+#gamemsg{font-weight:600;min-height:1.4em}
+
+/* timeline */
+.tl{display:grid;grid-template-columns:260px 1fr;gap:22px}
+@media(max-width:820px){.tl{grid-template-columns:1fr}}
+.tl-list{display:flex;flex-direction:column;gap:6px}
+.tl-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--card);cursor:pointer;transition:transform .1s,border-color .1s}
+.tl-item:hover{transform:translateX(3px)}
+.tl-item.on{border-color:var(--ink);box-shadow:var(--shadow)}
+.tl-item .dot{width:12px;height:12px;border-radius:50%;flex:none}
+.tl-item .n{font-family:"JetBrains Mono",monospace;font-size:.72rem;color:var(--muted);margin-left:auto}
+.tl-detail h3{font-size:1.5rem;font-weight:800}
+.bar{height:14px;background:var(--cream);border-radius:999px;overflow:hidden;margin:6px 0 14px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--orange),var(--blue));width:0;transition:width .6s cubic-bezier(.2,.8,.2,1)}
+.lesson{border-left:4px solid var(--orange);padding:6px 12px;background:var(--cream);border-radius:0 10px 10px 0;font-weight:600}
+#chart{width:100%;height:170px;display:block}
+
+/* reward lab */
+.toggles{display:grid;gap:10px}
+.tog{display:flex;align-items:center;gap:12px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--card);cursor:pointer;user-select:none}
+.tog input{width:20px;height:20px;accent-color:var(--orange)}
+.tog .w{margin-left:auto;font-family:"JetBrains Mono",monospace;font-size:.85rem}
+.scorebox{font-family:"JetBrains Mono",monospace;font-size:3rem;font-weight:600;text-align:center;padding:20px;border-radius:var(--r);background:var(--ink);color:#fff;transition:background .2s}
+.scorebox.good{background:var(--ok)}.scorebox.bad{background:var(--bad)}
+.scorebox small{display:block;font-size:.85rem;font-weight:400;opacity:.85;font-family:"Bricolage Grotesque",sans-serif}
+
+/* vision */
+.vis{position:relative;border-radius:var(--r);overflow:hidden;border:1px solid var(--line);background:#000}
+.vis canvas{display:block;width:100%}
+.vis .lbl{position:absolute;left:12px;top:12px;font-family:"JetBrains Mono",monospace;font-size:.72rem;color:#fff;background:rgba(0,0,0,.55);padding:.3em .6em;border-radius:6px}
+.seg{display:inline-flex;border:2px solid var(--ink);border-radius:999px;overflow:hidden}
+.seg button{border:0;background:transparent;font:inherit;font-weight:600;padding:.5em 1em;cursor:pointer}
+.seg button.on{background:var(--ink);color:#fff}
+input[type=range]{width:100%;accent-color:var(--orange)}
+
+/* spec flip cards */
+.flip{perspective:900px;height:150px;cursor:pointer}
+.flip .in{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+.flip.on .in{transform:rotateY(180deg)}
+.flip .f,.flip .k{position:absolute;inset:0;backface-visibility:hidden;border-radius:var(--r);padding:18px;border:1px solid var(--line);background:var(--card);box-shadow:var(--shadow)}
+.flip .k{transform:rotateY(180deg);background:var(--navy);color:#fff;font-size:.9rem}
+.flip .f b{font-size:1.5rem;display:block;font-weight:800}
+.flip .f small{color:var(--muted)}
+
+/* deploy wizard */
+.wiz{display:grid;grid-template-columns:230px 1fr;gap:20px}
+@media(max-width:820px){.wiz{grid-template-columns:1fr}}
+.steps{display:flex;flex-direction:column;gap:6px}
+.step{display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:12px;cursor:pointer;border:1px solid transparent}
+.step.on{background:var(--card);border-color:var(--line);box-shadow:var(--shadow)}
+.step .num{width:26px;height:26px;border-radius:50%;background:var(--cream);display:grid;place-items:center;font-weight:800;font-size:.85rem;flex:none}
+.step.done .num{background:var(--ok);color:#fff}
+pre{background:var(--ink);color:#f5f0e6;padding:16px;border-radius:12px;overflow:auto;font-size:.82rem;line-height:1.5;position:relative;margin:.6em 0}
+pre .copy{position:absolute;right:8px;top:8px;background:#fff;color:var(--ink);border:0;border-radius:8px;padding:.3em .6em;font:inherit;font-size:.72rem;cursor:pointer}
+.check{display:flex;align-items:center;gap:10px;padding:8px 0}
+.check input{width:20px;height:20px;accent-color:var(--ok)}
+
+/* brunson */
+#brunson{background:var(--navy);color:#fff}
+#brunson .eyebrow{color:var(--orange);background:rgba(245,132,38,.15)}
+#brunson .card{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.14);color:#fff;box-shadow:none}
+.jersey{width:210px;height:250px;margin:0 auto;position:relative;cursor:pointer;user-select:none}
+.jersey svg{width:100%;height:100%;filter:drop-shadow(0 12px 24px rgba(0,0,0,.4));transition:transform .2s}
+.jersey:hover svg{transform:rotate(-3deg) scale(1.03)}
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:99}
+.quote{font-size:1.4rem;font-weight:600;line-height:1.3}
+.namegen{font-family:"JetBrains Mono",monospace;background:rgba(0,0,0,.35);border-radius:12px;padding:14px;min-height:3.2em}
+
+/* arena */
+.arena-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.rule{padding:16px;border-radius:14px;background:var(--card);border:1px solid var(--line);cursor:pointer;transition:transform .1s}
+.rule:hover{transform:translateY(-2px)}
+.rule b{display:block;margin-bottom:.3em}
+.rule p{display:none;margin:0;font-size:.9rem}
+.rule.on p{display:block}
+.rule.on{border-color:var(--ink)}
+
+footer{padding:40px 0;border-top:1px solid var(--line);font-size:.9rem;color:var(--muted)}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .5s,transform .5s}
+.reveal.in{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="logo" href="#hero"><i></i> G1 Brunson</a>
+    <ul>
+      <li><a href="#game">Play</a></li>
+      <li><a href="#story">Story</a></li>
+      <li><a href="#reward">Reward</a></li>
+      <li><a href="#vision">Vision</a></li>
+      <li><a href="#arena">Arena</a></li>
+      <li><a href="#deploy">Deploy</a></li>
+      <li><a href="#brunson">Why Brunson?</a></li>
+    </ul>
+    <div id="progress"></div>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<section id="hero">
+  <div class="wrap grid">
+    <div>
+      <span class="eyebrow">HIM Arena · Sports Robotics Challenge · Open Build</span>
+      <h1>A robot that <span class="wobble o">dribbles</span> between its <span class="wobble b">legs.</span></h1>
+      <p style="font-size:1.15rem">G1 Brunson is a Unitree G1 humanoid taught, by trial and error inside a physics simulation, to do the between-the-legs crossover with a regulation basketball. No sensors on the ball. It sees it with its own head camera.</p>
+      <div class="stats">
+        <div class="stat"><b data-count="44.3">0</b><span>crossovers / 20 s</span></div>
+        <div class="stat"><b data-count="37.6">0</b><span>chained in a row</span></div>
+        <div class="stat"><b>0.31 s</b><span>per bounce</span></div>
+        <div class="stat"><b data-count="0">0</b><span>falls in 12 tests</span></div>
+      </div>
+      <a class="btn orange" href="#game">Try to beat it ↓</a>
+      <a class="btn ghost" href="https://github.com/AmoghShrivastava/g1-brunson" target="_blank" rel="noopener">Code on GitHub</a>
+    </div>
+    <div class="hero-video">
+      <span class="tag">simulation · head-camera in the loop · real-time</span>
+      <video src="demo.mp4" poster="frame.jpg" autoplay muted loop playsinline></video>
+    </div>
+  </div>
+</section>
+
+<!-- ============ GAME ============ -->
+<section id="game">
+  <div class="wrap">
+    <span class="eyebrow">01 · Play</span>
+    <h2>Can you out-dribble a robot?</h2>
+    <p>Same rules the robot was trained on. Push the ball with the hand it is in, catch it with the other hand when it comes through. Twenty seconds. Brunson averages <b>44</b>. Most humans with a keyboard get about 25.</p>
+    <div class="card reveal">
+      <canvas id="court" width="1000" height="440"></canvas>
+      <div class="gamebar">
+        <button class="btn orange" id="startBtn">Start 20 s</button>
+        <div class="score">crossovers <b id="sc">0</b> · chained <b id="ch">0</b> · <span id="clock">20.0</span>s</div>
+        <div id="gamemsg" class="muted">Press <kbd>A</kbd> for the left hand, <kbd>L</kbd> for the right hand, or tap the buttons.</div>
+        <div class="hands"><div class="hand" id="hl">L</div><div class="hand" id="hr">R</div></div>
+      </div>
+    </div>
+    <p class="muted" style="margin-top:12px">Why it is hard: a crossover only counts if the bounce lands in the gap between the feet, the ball rose to at least 0.30 m first, and the other hand plays it next. Press early and the ball never gets high enough. Press late and it rolls away. The robot had 720 million practice bounces to find the timing.</p>
+  </div>
+</section>
+
+<!-- ============ STORY ============ -->
+<section id="story">
+  <div class="wrap">
+    <span class="eyebrow">02 · The build story</span>
+    <h2>Eleven runs, one winner. Click through.</h2>
+    <p>Each run is a training session on a rented GPU. Each one taught us something, usually by breaking. The bar is the number of crossovers per 20-second test.</p>
+    <div class="tl reveal">
+      <div class="tl-list" id="tlList"></div>
+      <div>
+        <div class="card tl-detail" id="tlDetail"></div>
+        <div class="card" style="margin-top:16px"><canvas id="chart" width="800" height="170"></canvas><div class="muted" style="font-size:.8rem">crossovers per 20 s in the standard test, by run</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ REWARD ============ -->
+<section id="reward">
+  <div class="wrap">
+    <span class="eyebrow">03 · The reward</span>
+    <h2>Be the referee.</h2>
+    <p>Reinforcement learning is just: do something, get a score, do more of what scored. The whole trick was writing the scoring rule so that only a <em>real</em> crossover pays. Flip the switches to see how one bounce gets scored.</p>
+    <div class="grid g2 reveal">
+      <div class="toggles" id="togs"></div>
+      <div>
+        <div class="scorebox" id="scorebox">+0<small>score for this bounce</small></div>
+        <p class="muted" style="margin-top:12px" id="scorewhy"></p>
+        <div class="card" style="font-size:.9rem">
+          <b>Also in the rulebook</b>
+          <ul style="margin:.4em 0 0;padding-left:1.2em">
+            <li>+1 every time a palm plays the ball</li>
+            <li>−0.3 for a bounce the robot did not cause</li>
+            <li>−5 if the ball rolls away and has to be replaced</li>
+            <li>−12 per metre the dribble apex is below 0.30 m</li>
+            <li>−50 for falling over (this one mattered most)</li>
+            <li>small charges for jerky motion, feet lifting, bad posture</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VISION ============ -->
+<section id="vision">
+  <div class="wrap">
+    <span class="eyebrow">04 · Perception</span>
+    <h2>What the robot sees.</h2>
+    <p>The G1 has a small depth camera in its head, tilted down. The robot renders what its <em>own body</em> should look like from its joint angles, subtracts that from the depth image, and whatever is left over and closer than its own body is the ball. Drag the slider.</p>
+    <div class="grid g2 reveal" style="align-items:start">
+      <div>
+        <div class="vis"><canvas id="visc" width="580" height="386"></canvas><span class="lbl" id="vislbl">head camera · colour</span></div>
+        <div style="display:flex;gap:12px;align-items:center;margin-top:12px;flex-wrap:wrap">
+          <div class="seg" id="visseg"><button class="on" data-m="0">Colour</button><button data-m="1">Depth</button><button data-m="2">Self mask</button><button data-m="3">Ball found</button></div>
+          <label style="flex:1;min-width:160px;font-size:.85rem">time <input type="range" id="vist" min="0" max="100" value="30"></label>
+        </div>
+      </div>
+      <div class="grid" style="gap:12px">
+        <div class="card"><b>Why depth, not colour</b><p style="margin:0">Orange balls look grey in bad light and a court floor can be orange. Depth does not care about lighting, and the ball's size is known, so a sphere is fitted straight onto the pixels.</p></div>
+        <div class="card"><b>When the ball vanishes</b><p style="margin:0">Under the body the camera cannot see it. A tracker carries it through with a bounce model, the same way you know where the ball is when you look up.</p></div>
+        <div class="card"><b>The clever bit</b><p style="margin:0">That exact tracker, noise and dropouts included, was copied into the training simulation. The robot practised on what the camera would actually tell it, not on perfect information. Camera-in-the-loop: <b>41.8</b> crossovers vs 44.3 with perfect information.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SPECS ============ -->
+<section id="specs" style="padding-top:0">
+  <div class="wrap">
+    <span class="eyebrow">05 · Grounded in real numbers</span>
+    <h2>Nothing made up. Tap a card.</h2>
+    <div class="grid g3 reveal" id="specs-grid"></div>
+  </div>
+</section>
+
+<!-- ============ ARENA ============ -->
+<section id="arena">
+  <div class="wrap">
+    <span class="eyebrow">06 · The challenge</span>
+    <h2>Built for the HIM Arena sports robotics challenge.</h2>
+    <p>HIM Arena's Open Build challenge asks for a humanoid skill that is grounded in real physics, evaluated honestly, and shipped as a package anyone can run: a policy, a simulator, and a writeup. Here is how G1 Brunson answered each line of that brief. Click a card.</p>
+    <div class="arena-grid reveal" id="arenaGrid"></div>
+    <p style="margin-top:18px"><a class="btn blue" href="https://arena.himrobotics.com/uploads/source_641045110d48de6239e5" target="_blank" rel="noopener">See the arena entry</a> <a class="btn ghost" href="https://github.com/AmoghShrivastava/g1-brunson" target="_blank" rel="noopener">Download the package</a></p>
+  </div>
+</section>
+
+<!-- ============ DEPLOY ============ -->
+<section id="deploy">
+  <div class="wrap">
+    <span class="eyebrow">07 · Deploy</span>
+    <h2>Run it yourself.</h2>
+    <p>Three paths: run the test on a laptop in five minutes, retrain from scratch on one GPU in about a day, or put it on a real G1. Tick the boxes as you go; the page remembers.</p>
+    <div class="wiz reveal">
+      <div class="steps" id="steps"></div>
+      <div class="card" id="stepBody"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ BRUNSON ============ -->
+<section id="brunson">
+  <div class="wrap">
+    <span class="eyebrow">08 · The name</span>
+    <h2>Why "Brunson"?</h2>
+    <div class="grid g2" style="align-items:center">
+      <div>
+        <p class="quote">Because the Knicks finally did it, and Jalen Brunson is the reason.</p>
+        <p>This project was built in the afterglow of the New York Knicks' championship run. Brunson is the guard who keeps the ball on a string, plays below the defender's hands, and never, ever looks rushed. That is exactly the behaviour we were trying to squeeze out of a 35-kilogram robot with rubber hands: low, tight, rhythmic, unbothered.</p>
+        <p>So the policy got a name instead of a version number. Every checkpoint before it is a letter of the alphabet. The one that finally dribbled like a point guard is <b>G1 Brunson</b>.</p>
+        <p class="muted" style="font-size:.85rem">Also, "G1" is the robot model and Brunson wears #11. Two ones. We noticed after naming it and decided it was fate.</p>
+        <div class="card" style="margin-top:14px">
+          <b>Name generator for your own robot</b>
+          <p class="muted" style="margin:.2em 0 .6em;font-size:.85rem">In case you also want to name a policy after a point guard.</p>
+          <div class="namegen" id="namegen">G1 Brunson</div>
+          <button class="btn orange" style="margin-top:10px" id="genBtn">Generate</button>
+        </div>
+      </div>
+      <div style="text-align:center">
+        <div class="jersey" id="jersey" title="click me">
+          <svg viewBox="0 0 210 250">
+            <path d="M55 10 L85 2 Q105 22 125 2 L155 10 L200 45 L175 80 L160 68 L160 240 L50 240 L50 68 L35 80 L10 45 Z" fill="#006BB6" stroke="#F58426" stroke-width="6" stroke-linejoin="round"/>
+            <path d="M85 2 Q105 22 125 2" fill="none" stroke="#F58426" stroke-width="6"/>
+            <text x="105" y="120" text-anchor="middle" font-family="Bricolage Grotesque,sans-serif" font-weight="800" font-size="26" fill="#F58426">BRUNSON</text>
+            <text x="105" y="205" text-anchor="middle" font-family="Bricolage Grotesque,sans-serif" font-weight="800" font-size="84" fill="#fff" stroke="#F58426" stroke-width="3">11</text>
+          </svg>
+        </div>
+        <p class="muted" style="font-size:.85rem;margin-top:8px">click the jersey. you know you want to.</p>
+        <div class="card" style="text-align:left;margin-top:10px;font-size:.9rem">
+          <b>The uniform</b><p style="margin:0">During development the simulated robot wore a full Knicks kit, jersey and shorts, as separate garment meshes draped over the body. It was removed for the final renders so the judges could see the joints. It lives on in a folder called <code>uniform_assets</code>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:center">
+      <span><b style="color:var(--ink)">G1 Brunson</b> · Tenace Labs · 2026</span>
+      <a href="https://github.com/AmoghShrivastava/g1-brunson" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://arena.himrobotics.com/uploads/source_641045110d48de6239e5" target="_blank" rel="noopener">HIM Arena entry</a>
+      <span style="margin-left:auto">MIT licence · Unitree G1 description BSD-3 · Not affiliated with the NBA or the Knicks, just fans.</span>
+    </div>
+  </div>
+</footer>
+
+<canvas class="confetti" id="confetti"></canvas>
+
+<script>
+/* ---------- helpers ---------- */
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+
+/* reveal on scroll + nav highlight + progress */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')}),{threshold:.12});
+$$('.reveal').forEach(el=>io.observe(el));
+const secs=$$('section[id]'), navLinks=$$('nav li a');
+addEventListener('scroll',()=>{
+  const h=document.documentElement; $('#progress').style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';
+  let cur=secs[0].id; for(const s of secs){if(s.getBoundingClientRect().top<120)cur=s.id}
+  navLinks.forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+cur));
+},{passive:true});
+
+/* count-up stats */
+$$('[data-count]').forEach(el=>{const t=parseFloat(el.dataset.count);let s=null;const step=ts=>{if(!s)s=ts;const p=Math.min(1,(ts-s)/1200);el.textContent=(t*(1-Math.pow(1-p,3))).toFixed(t%1?1:0);if(p<1)requestAnimationFrame(step)};requestAnimationFrame(step)});
+
+/* ---------- DRIBBLE GAME ---------- */
+(()=>{
+  const cv=$('#court'),cx=cv.getContext('2d'),W=cv.width,H=cv.height;
+  const FLOOR=H-40, SCALE=380; // px per metre
+  const LX=W/2-150, RX=W/2+150, HANDY=FLOOR-0.55*SCALE; // hand positions
+  const FEET=[W/2-70,W/2+70];
+  const R=0.119*SCALE, G=9.81*SCALE;
+  let ball, hand, expect, apex, score, chain, lastCatch, t, running=false, msg='', flash=0, last=0, hist=[];
+  function reset(){ball={x:LX,y:HANDY,vx:0,vy:0,held:true};hand='L';expect=false;apex=0;score=0;chain=0;lastCatch=false;t=20;msg='';hist=[];}
+  reset();
+  function push(side){
+    if(!running)return;
+    const hx=side==='L'?LX:RX, sign=side==='L'?1:-1;
+    const near=Math.hypot(ball.x-hx,ball.y-HANDY)<R*1.6+30;
+    if(!near){msg=side===hand?'the ball is not in that hand yet':'ball is not there';flash=8;return;}
+    if(side!==hand){msg='wrong hand: −3';score=Math.max(0,score-3);chain=0;lastCatch=false;flash=8;return;}
+    if(expect){msg='already released, wait for the bounce';flash=8;return;}
+    // launch through the gap toward the other hand
+    ball.held=false;ball.vx=sign*1.55*SCALE;ball.vy=1.9*SCALE;ball.x=hx+sign*10;ball.y=HANDY;
+    expect=true;apex=FLOOR-ball.y;
+    $('#'+(side==='L'?'hl':'hr')).classList.add('lit');setTimeout(()=>$('#'+(side==='L'?'hl':'hr')).classList.remove('lit'),120);
+  }
+  function step(dt){
+    if(!running)return;
+    t-=dt;if(t<=0){t=0;running=false;msg=score>=44?'You beat Brunson. Seriously.':score>=30?'Respectable. Brunson still wins.':'Brunson: 44. You: '+score+'. Robots, huh.';$('#startBtn').disabled=false;$('#startBtn').textContent='Play again';}
+    if(!ball.held){
+      ball.vy+=G*dt;ball.x+=ball.vx*dt;ball.y+=ball.vy*dt;
+      apex=Math.max(apex,FLOOR-ball.y);
+      if(ball.y+R>=FLOOR){
+        ball.y=FLOOR-R;
+        const inGap=ball.x>FEET[0]+8&&ball.x<FEET[1]-8;
+        const highEnough=apex>=0.30*SCALE+R;
+        if(expect){
+          if(inGap&&highEnough){score+=3;msg='crossover +3'+(lastCatch?'  chained +2':'');if(lastCatch){score+=2;chain++;}ball.vy=-ball.vy*0.85;hand=hand==='L'?'R':'L';expect=false;lastCatch=true;flash=10;hist.push(1);}
+          else{msg=inGap?'too low (apex < 0.30 m): bad bounce −1':'missed the gap: bad bounce −1';score=Math.max(0,score-1);ball.vy=-ball.vy*0.85;hand=hand==='L'?'R':'L';expect=false;lastCatch=false;chain=0;flash=10;hist.push(0);}
+        } else {ball.vy=-ball.vy*0.8;}
+        ball.vx*=0.98;apex=0;
+      }
+      // catch: ball reaches receiving hand zone on the way up
+      const hx=hand==='L'?LX:RX;
+      if(!expect&&ball.vy<0&&Math.hypot(ball.x-hx,ball.y-HANDY)<R*1.6+30){ball.held=true;ball.x=hx;ball.y=HANDY;ball.vx=ball.vy=0;if(lastCatch){}}
+      if(ball.x<-R||ball.x>W+R||(Math.abs(ball.vy)<5&&ball.y>FLOOR-R-1&&!ball.held&&!expect&&Math.abs(ball.vx)<3)){msg='ball rolled away: −5, new ball';score=Math.max(0,score-5);chain=0;lastCatch=false;ball={x:hand==='L'?LX:RX,y:HANDY,vx:0,vy:0,held:true};expect=false;flash=10;}
+    }
+  }
+  function draw(){
+    cx.clearRect(0,0,W,H);
+    // court
+    cx.fillStyle='#22283a';cx.fillRect(0,0,W,H);cx.fillStyle='#c8873f';cx.fillRect(0,FLOOR,W,H-FLOOR);
+    cx.strokeStyle='rgba(255,255,255,.08)';for(let i=0;i<W;i+=50){cx.beginPath();cx.moveTo(i,FLOOR);cx.lineTo(i,H);cx.stroke()}
+    // gap marker
+    cx.fillStyle=flash>0&&msg.startsWith('crossover')?'rgba(46,158,91,.35)':'rgba(255,255,255,.08)';cx.fillRect(FEET[0],FLOOR-6,FEET[1]-FEET[0],6);
+    // robot: simple figure
+    const legTop=FLOOR-0.9*SCALE;
+    cx.lineCap='round';cx.lineWidth=22;cx.strokeStyle='#d9d9d9';
+    cx.beginPath();cx.moveTo(W/2,legTop);cx.lineTo(FEET[0],FLOOR-8);cx.stroke();
+    cx.beginPath();cx.moveTo(W/2,legTop);cx.lineTo(FEET[1],FLOOR-8);cx.stroke();
+    cx.lineWidth=30;cx.beginPath();cx.moveTo(W/2,legTop);cx.lineTo(W/2,legTop-0.32*SCALE);cx.stroke();
+    cx.fillStyle='#e6e6e6';cx.beginPath();cx.arc(W/2,legTop-0.32*SCALE-34,26,0,7);cx.fill();
+    cx.fillStyle='#F58426';cx.fillRect(W/2-14,legTop-0.32*SCALE-40,28,8);
+    // arms
+    cx.lineWidth=16;cx.strokeStyle='#cfcfcf';
+    cx.beginPath();cx.moveTo(W/2-15,legTop-0.28*SCALE);cx.lineTo(LX+20,HANDY);cx.stroke();
+    cx.beginPath();cx.moveTo(W/2+15,legTop-0.28*SCALE);cx.lineTo(RX-20,HANDY);cx.stroke();
+    // hands
+    for(const [x,s] of [[LX,'L'],[RX,'R']]){cx.fillStyle=hand===s&&!expect?'#F58426':'#fff';cx.beginPath();cx.arc(x,HANDY,16,0,7);cx.fill();cx.fillStyle='#111';cx.font='bold 13px JetBrains Mono';cx.textAlign='center';cx.fillText(s,x,HANDY+5);}
+    // 0.30 m line
+    cx.strokeStyle='rgba(255,255,255,.25)';cx.setLineDash([6,6]);cx.lineWidth=1;cx.beginPath();cx.moveTo(0,FLOOR-0.30*SCALE-R);cx.lineTo(W,FLOOR-0.30*SCALE-R);cx.stroke();cx.setLineDash([]);
+    cx.fillStyle='rgba(255,255,255,.5)';cx.font='11px JetBrains Mono';cx.textAlign='left';cx.fillText('apex must reach 0.30 m',8,FLOOR-0.30*SCALE-R-6);
+    // ball
+    cx.fillStyle='#F58426';cx.beginPath();cx.arc(ball.x,ball.y,R,0,7);cx.fill();
+    cx.strokeStyle='#3a1d08';cx.lineWidth=2;cx.beginPath();cx.moveTo(ball.x-R,ball.y);cx.lineTo(ball.x+R,ball.y);cx.moveTo(ball.x,ball.y-R);cx.lineTo(ball.x,ball.y+R);cx.stroke();
+    // message
+    if(msg){cx.fillStyle=flash>0?'#fff':'rgba(255,255,255,.7)';cx.font='600 18px Bricolage Grotesque';cx.textAlign='center';cx.fillText(msg,W/2,40)}
+    if(!running&&t===20){cx.fillStyle='rgba(255,255,255,.75)';cx.font='600 20px Bricolage Grotesque';cx.textAlign='center';cx.fillText('press Start, then alternate hands',W/2,80)}
+    flash=Math.max(0,flash-1);
+    $('#sc').textContent=score;$('#ch').textContent=chain;$('#clock').textContent=t.toFixed(1);
+  }
+  function loop(ts){const dt=Math.min(.033,(ts-last)/1000||0);last=ts;step(dt);draw();requestAnimationFrame(loop)}
+  requestAnimationFrame(loop);
+  $('#startBtn').onclick=()=>{reset();running=true;$('#startBtn').disabled=true;$('#startBtn').textContent='Go!';msg='';};
+  $('#hl').onpointerdown=()=>push('L');$('#hr').onpointerdown=()=>push('R');
+  addEventListener('keydown',e=>{if(e.repeat)return;const k=e.key.toLowerCase();if(k==='a'){push('L');e.preventDefault()}if(k==='l'){push('R');e.preventDefault()}});
+})();
+
+/* ---------- STORY TIMELINE ---------- */
+const RUNS=[
+ {k:'A',name:'Palm box',steps:'248M',x:9,fall:60,color:'#c9c2b2',
+  what:'First serious attempt. Replaced the rubber hand mesh with a flat palm-sized box so the ball had something to bounce off.',
+  lesson:'The robot learned to fall over slowly rather than dribble. Falling was cheaper than trying.'},
+ {k:'B',name:'Capsule hand',steps:'258M',x:8,fall:62,color:'#c9c2b2',
+  what:'Control experiment: same run with a capsule hand instead of the box. Seed 1.',
+  lesson:'The box was better. Hands matter more than you would think.'},
+ {k:'C',name:'Apex rule',steps:'231M',x:30.9,fall:8,color:'#F58426',
+  what:'Added the rule that a crossover only counts if the ball rose to 0.30 m first, made the wrong hand cost −3 and a fall cost −50.',
+  lesson:'First real dribbles. 31 crossovers per test. The −50 for falling did more than any positive reward.'},
+ {k:'D',name:'Gentle',steps:'186M',x:28,fall:58,color:'#c9c2b2',
+  what:'Tried softer penalties to reduce jitter.',
+  lesson:'Softer penalties, more falls. Kept C.'},
+ {k:'E',name:'Vision, take 1',steps:'20M',x:14.9,fall:30,color:'#c9c2b2',
+  what:'Fine-tuned C with a fake camera in the loop: random noise and dropouts on the ball position.',
+  lesson:'Halved the score. The learning rate was too high and the noise was the wrong shape. Shelved, not abandoned.'},
+ {k:'F',name:'Refine',steps:'210M',x:44.1,fall:0,color:'#F58426',
+  what:'Went back to C and just kept training it with perfect ball information. Two restarts from checkpoints, one lost to a rented machine expiring with the checkpoint still on it.',
+  lesson:'Patience. 31 became 44 with no rule changes at all. Also: fetch your checkpoints every ten minutes.'},
+ {k:'G',name:'G1 Brunson',steps:'236M',x:44.3,fall:0,color:'#006BB6',
+  what:'Fine-tuned F with an exact copy of the real camera tracker running inside the simulation: same Kalman filter, same field of view, same 12 % dropout. Learning rate cut to a third.',
+  lesson:'Camera-in-the-loop went from 18.5 to 41.8. The winner. Everything after this is research.'},
+ {k:'H',name:'Hold start',steps:'412M',x:0,fall:25,color:'#c9c2b2',
+  what:'Tried to make the robot start with the ball held in both hands, drop it, and pick up the dribble.',
+  lesson:'Two rigid rubber paddles cannot hold a sphere in this simulator. Five variants, zero successes. Parked.'},
+ {k:'R',name:'Recovery',steps:'296M',x:32.5,fall:0,color:'#c9c2b2',
+  what:'Erratic bounces: the ball randomly kicks sideways off the floor. Rewarded the robot for getting it back.',
+  lesson:'Brunson already handled it (32.5 under disturbance, no falls). Extra training did not beat that.'},
+ {k:'CH',name:'Chase',steps:'414M',x:40.6,fall:0,color:'#c9c2b2',
+  what:'Dense reward for moving the pelvis toward a runaway ball.',
+  lesson:'The robot leaned. It did not step. Seventy percent of lost balls need a real step, which is a different skill.'},
+ {k:'ST',name:'Stepping',steps:'258M',x:0,fall:37,color:'#c9c2b2',
+  what:'Spawned the ball at rest out of reach so the robot had to walk to it.',
+  lesson:'A resting ball near the feet trips the robot. Then the laptop went to sleep and the run was lost. Brunson stays the final answer.'},
+];
+const tlList=$('#tlList'),tlDetail=$('#tlDetail');
+RUNS.forEach((r,i)=>{const d=document.createElement('div');d.className='tl-item';d.innerHTML=`<span class="dot" style="background:${r.color}"></span><b>${r.k}</b> ${r.name}<span class="n">${r.steps}</span>`;d.onclick=()=>showRun(i);tlList.appendChild(d)});
+function showRun(i){
+  const r=RUNS[i];$$('.tl-item').forEach((e,j)=>e.classList.toggle('on',i===j));
+  tlDetail.innerHTML=`<span class="pill" style="background:${r.color};color:#fff">run ${r.k}</span> <span class="pill">${r.steps} training steps</span>
+  <h3 style="margin-top:.5em">${r.name}</h3>
+  <div class="muted" style="font-size:.85rem">crossovers per 20 s test</div><div class="bar"><i id="tlbar"></i></div>
+  <div style="display:flex;gap:18px;margin-bottom:12px"><div><b style="font-size:1.6rem">${r.x||'—'}</b><br><span class="muted" style="font-size:.8rem">crossovers</span></div><div><b style="font-size:1.6rem">${r.fall}%</b><br><span class="muted" style="font-size:.8rem">falls (training eval)</span></div></div>
+  <p>${r.what}</p><div class="lesson">${r.lesson}</div>`;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{$('#tlbar').style.width=(r.x/50*100)+'%'}));
+  drawChart(i);
+}
+function drawChart(sel){
+  const c=$('#chart'),x=c.getContext('2d'),W=c.width,H=c.height,pad=30,bw=(W-pad*2)/RUNS.length;
+  x.clearRect(0,0,W,H);
+  x.strokeStyle='#e6dcc6';x.beginPath();x.moveTo(pad,H-24);x.lineTo(W-pad,H-24);x.stroke();
+  x.setLineDash([4,4]);x.strokeStyle='#006BB6';x.beginPath();const y44=H-24-(44.3/50)*(H-50);x.moveTo(pad,y44);x.lineTo(W-pad,y44);x.stroke();x.setLineDash([]);
+  x.fillStyle='#006BB6';x.font='11px JetBrains Mono';x.textAlign='right';x.fillText('Brunson 44.3',W-pad,y44-4);
+  RUNS.forEach((r,i)=>{const h=(r.x/50)*(H-50);x.fillStyle=i===sel?r.color==='#c9c2b2'?'#14161c':r.color:r.color;x.globalAlpha=i===sel?1:.7;
+    const bx=pad+i*bw+6;x.beginPath();x.roundRect(bx,H-24-h,bw-12,h,6);x.fill();x.globalAlpha=1;
+    x.fillStyle='#6b6f78';x.font='11px JetBrains Mono';x.textAlign='center';x.fillText(r.k,bx+(bw-12)/2,H-8);});
+}
+showRun(6);
+
+/* ---------- REWARD LAB ---------- */
+const TOGS=[
+ {id:'contact',t:'A palm played the ball before this bounce',w:'required'},
+ {id:'gap',t:'The bounce landed in the gap between the feet',w:'required'},
+ {id:'dir',t:'The ball is travelling toward the other hand',w:'required'},
+ {id:'apex',t:'The ball rose to at least 0.30 m before the bounce',w:'required'},
+ {id:'catch',t:'The receiving hand then catches it',w:'+2'},
+ {id:'chain',t:'…and this crossover followed a previous catch',w:'+2'},
+ {id:'wrong',t:'Oops: the wrong hand touched it on the way',w:'−3'},
+];
+const togs=$('#togs');
+TOGS.forEach(t=>{const l=document.createElement('label');l.className='tog';l.innerHTML=`<input type="checkbox" id="tg_${t.id}" ${['contact','gap','dir','apex'].includes(t.id)?'checked':''}><span>${t.t}</span><span class="w">${t.w}</span>`;l.querySelector('input').onchange=scoreIt;togs.appendChild(l)});
+function scoreIt(){
+  const v=id=>$('#tg_'+id).checked;
+  const cross=v('contact')&&v('gap')&&v('dir')&&v('apex');
+  let s=0,why=[];
+  if(cross){s+=3;why.push('crossover +3');if(v('catch')){s+=2;why.push('catch +2');if(v('chain')){s+=2;why.push('chained +2')}}}
+  else{s-=1;why.push('bad bounce −1');const missing=['contact','gap','dir','apex'].filter(k=>!v(k));why.push('missing: '+missing.join(', '));if(!v('apex'))why.push('and a low apex costs up to −12 per metre on top')}
+  if(v('wrong')){s-=3;why.push('wrong hand −3')}
+  const box=$('#scorebox');box.className='scorebox '+(s>0?'good':'bad');box.innerHTML=(s>0?'+':'')+s+'<small>score for this bounce</small>';
+  $('#scorewhy').textContent=why.join(' · ');
+}
+scoreIt();
+
+/* ---------- VISION DEMO ---------- */
+(()=>{
+  const c=$('#visc'),x=c.getContext('2d'),W=c.width,H=c.height;let mode=0,t=.3;
+  const lbls=['head camera · colour','head camera · depth (near = bright)','depth minus the robot\'s own body','sphere fitted → ball found'];
+  function ballPos(t){const ph=t*Math.PI*2*1.3;const bx=W/2+Math.sin(ph)*150;const by=H*0.62-Math.abs(Math.cos(ph))*90;return [bx,by,Math.abs(Math.cos(ph))]}
+  function draw(){
+    x.clearRect(0,0,W,H);
+    const [bx,by,hgt]=ballPos(t);const r=38-hgt*8;
+    const hidden=Math.abs(bx-W/2)<40&&hgt<.4; // under the body
+    if(mode===0){
+      const g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,'#3b3f4a');g.addColorStop(1,'#a06a3c');x.fillStyle=g;x.fillRect(0,0,W,H);
+      x.fillStyle='#c8873f';x.fillRect(0,H*.55,W,H);x.strokeStyle='rgba(255,255,255,.15)';for(let i=0;i<W;i+=40){x.beginPath();x.moveTo(i,H*.55);x.lineTo(i-40,H);x.stroke()}
+      body('#cfcfcf','#9a9a9a');
+      if(!hidden){x.fillStyle='#e0762a';x.beginPath();x.arc(bx,by,r,0,7);x.fill();x.strokeStyle='#4a2508';x.lineWidth=2;x.beginPath();x.moveTo(bx-r,by);x.lineTo(bx+r,by);x.moveTo(bx,by-r);x.lineTo(bx,by+r);x.stroke()}
+    } else if(mode===1){
+      x.fillStyle='#222';x.fillRect(0,0,W,H);const g=x.createLinearGradient(0,H*.5,0,H);g.addColorStop(0,'#333');g.addColorStop(1,'#bbb');x.fillStyle=g;x.fillRect(0,H*.5,W,H);
+      body('#ddd','#ddd');
+      if(!hidden){x.fillStyle=`rgb(${230-hgt*40},${230-hgt*40},${230-hgt*40})`;x.beginPath();x.arc(bx,by,r,0,7);x.fill()}
+      noise();
+    } else if(mode===2){
+      x.fillStyle='#000';x.fillRect(0,0,W,H);
+      if(!hidden){x.fillStyle='#fff';x.beginPath();x.arc(bx,by,r,0,7);x.fill()}
+      noise(.35);
+      x.fillStyle='rgba(255,255,255,.5)';x.font='12px JetBrains Mono';x.fillText('own body removed · floor removed · what remains is closer than the body',10,H-12);
+    } else {
+      x.fillStyle='#0b1b33';x.fillRect(0,0,W,H);body('#2a3b55','#2a3b55');
+      if(!hidden){x.strokeStyle='#F58426';x.lineWidth=3;x.beginPath();x.arc(bx,by,r+4,0,7);x.stroke();x.fillStyle='#F58426';x.font='12px JetBrains Mono';x.fillText(`ball  r=0.119 m  err≈3 mm`,bx+r+10,by-4)}
+      else{x.strokeStyle='#F58426';x.setLineDash([5,5]);x.lineWidth=2;x.beginPath();x.arc(bx,by,r+4,0,7);x.stroke();x.setLineDash([]);x.fillStyle='#F58426';x.font='12px JetBrains Mono';x.fillText('occluded → Kalman prediction',bx+r+10,by-4)}
+    }
+    function body(fill,dark){x.fillStyle=fill;x.beginPath();x.roundRect(W/2-70,H*.15,140,H*.45,30);x.fill();x.fillStyle=dark;x.beginPath();x.roundRect(W/2-60,H*.55,45,H*.5,14);x.fill();x.beginPath();x.roundRect(W/2+15,H*.55,45,H*.5,14);x.fill();x.fillStyle=fill;x.beginPath();x.roundRect(30,H*.2,50,120,20);x.fill();x.beginPath();x.roundRect(W-80,H*.2,50,120,20);x.fill()}
+    function noise(a=.12){x.fillStyle=`rgba(255,255,255,${a})`;for(let i=0;i<120;i++){x.fillRect(Math.random()*W,Math.random()*H,2,2)}}
+    $('#vislbl').textContent=lbls[mode];
+  }
+  $$('#visseg button').forEach(b=>b.onclick=()=>{mode=+b.dataset.m;$$('#visseg button').forEach(o=>o.classList.toggle('on',o===b));draw()});
+  $('#vist').oninput=e=>{t=e.target.value/100;draw()};
+  draw();
+})();
+
+/* ---------- SPEC CARDS ---------- */
+const SPECS=[
+ {f:'0.11926 m',s:'ball radius',k:'Size-7 game ball: 29.5-inch circumference from the official rulebook. The simulator uses that exact radius, not "about 12 cm".'},
+ {f:'0.6237 kg',s:'ball mass',k:'22 ounces. Modelled as a thin shell, so it spins like a real ball rather than a solid rubber sphere.'},
+ {f:'1.30 m',s:'rebound from 1.8 m',k:'The official inflation test says a ball dropped from 1.8 m must rebound between 1.2 and 1.4 m. We fitted the contact model to hit 1.30 and randomised across the whole legal band.'},
+ {f:'29 joints',s:'Unitree G1, rubber hands',k:'Unitree\'s own robot description, checked link by link against the URDF. Total mass agrees to within one gram.'},
+ {f:'40.2 / 99.1 Nm/rad',s:'hip and knee gains',k:'The exact PD gains Unitree ships in its deployment config, so the simulated motors behave like the real ones. Torque limits and rotor inertia too.'},
+ {f:'50 Hz · 2 ms',s:'control and physics rates',k:'The policy decides 50 times a second; physics runs at 500 Hz underneath. Same as a real G1 deployment loop.'},
+ {f:'47.6° down',s:'head camera tilt',k:'Where Unitree mounts the RealSense D435i. Field of view 87° by 58°. The training camera matches so the robot is not surprised on hardware.'},
+ {f:'4,096',s:'robots practising at once',k:'One GPU simulates 4,096 robots in lockstep with MuJoCo MJX. Roughly 100 million bounces every 3.5 hours.'},
+ {f:'115 → 29',s:'inputs and outputs',k:'The brain is a small three-layer network: 115 numbers in (balance, joints, last action, three frames of ball, four cues), 29 joint targets out. No JAX needed at run time; plain numpy.'},
+];
+const sg=$('#specs-grid');SPECS.forEach(s=>{const d=document.createElement('div');d.className='flip';d.innerHTML=`<div class="in"><div class="f"><b>${s.f}</b><small>${s.s}</small><div class="muted" style="font-size:.75rem;margin-top:8px">tap to flip</div></div><div class="k">${s.k}</div></div>`;d.onclick=()=>d.classList.toggle('on');sg.appendChild(d)});
+
+/* ---------- ARENA ---------- */
+const ARENA=[
+ {b:'A real robot, really modelled',p:'Unitree\'s official G1 files, gains, limits and collision shapes. Nothing tuned to make the sim easier.'},
+ {b:'A real ball, really calibrated',p:'Regulation size, mass and the official bounce test. The only thing the robot ever practised on.'},
+ {b:'Honest evaluation',p:'12 fixed-seed episodes, plus a do-nothing control on the same episodes (it scores zero and falls in two seconds). Every number in the writeup comes from those files.'},
+ {b:'Sim-to-real thinking',p:'Head-camera perception in the loop, cue bookkeeping that runs on the robot, domain randomisation of masses, gains, friction, sensors and delay.'},
+ {b:'A package anyone can run',p:'One zip: policy, weights, simulator, training code, results, videos. A CPU laptop reproduces the test in five minutes.'},
+ {b:'A skill that is actually a skill',p:'Not standing, not walking. A between-the-legs crossover at a point guard\'s tempo, 0.31 s per bounce.'},
+];
+const ag=$('#arenaGrid');ARENA.forEach(a=>{const d=document.createElement('div');d.className='rule';d.innerHTML=`<b>${a.b}</b><p>${a.p}</p>`;d.onclick=()=>d.classList.toggle('on');ag.appendChild(d)});
+
+/* ---------- DEPLOY WIZARD ---------- */
+const STEPS=[
+ {t:'Run the test (laptop, 5 min)',h:`<h3>Reproduce the numbers on any computer</h3><p>The controller is plain numpy. Evaluation uses MuJoCo on the CPU.</p>
+<pre><code>git clone https://github.com/AmoghShrivastava/g1-brunson.git
+cd g1-brunson
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements-train.txt
+python evaluate_mjx.py --episodes 12 --video_episodes 2
+python replay_viewer.py evaluation/traj_trained_ep0.npz</code></pre>
+<p>Expected: about 44 crossovers, zero falls, and <code>evaluation/trained.mp4</code> written next to the results.</p>
+<label class="check"><input type="checkbox" data-c="s0a"> results.json shows ~44 crossovers</label>
+<label class="check"><input type="checkbox" data-c="s0b"> the do-nothing control scored 0</label>`},
+ {t:'Camera in the loop',h:`<h3>Let the robot see for itself</h3><p>This renders the head camera every control step, runs the depth detector and the tracker, and feeds only that to the policy.</p>
+<pre><code>python evaluate_vision.py --episodes 6 --env_contact</code></pre>
+<p>Expected: about 42 crossovers, ball detected on 95 % of frames.</p>
+<label class="check"><input type="checkbox" data-c="s1a"> evaluation_vision/results.json written</label>`},
+ {t:'Retrain from scratch (1 GPU, ~24 h)',h:`<h3>Three stages on one 24 GB GPU</h3><p>Stage 1 learns the move. Stage 2 keeps polishing it. Stage 3 fine-tunes with the camera tracker emulated. Use the low learning rate in stage 3; the default one wrecks a warm start.</p>
+<pre><code># stage 1: from scratch
+python train.py --out runs/s1 --num_envs 4096 --num_timesteps 230000000 --num_evals 23
+# stage 2: keep going
+python train.py --out runs/s2 --restore runs/s1/params.pkl --num_envs 4096 --num_timesteps 210000000 --num_evals 21
+# stage 3: perception emulation -> G1 Brunson
+python train.py --out runs/s3 --restore runs/s2/params.pkl --num_envs 4096 --num_timesteps 100000000 \\
+  --num_evals 10 --lr 1e-4 --entropy 0.002 \\
+  --override vision_config.enable=true --override vision_config.kalman=true \\
+  --override vision_config.dropout=0.12 --override vision_config.pos_noise=0.02 --override vision_config.vel_noise=0.5 \\
+  --override vision_config.tan_half_h=0.949 --override vision_config.tan_half_v=0.554
+python export_policy.py runs/s3/params.pkl --out policy_weights.npz</code></pre>
+<p>Short on time? <code>checkpoints/g1_brunson_params.pkl</code> is the finished checkpoint; restore from it and skip to stage 3.</p>
+<label class="check"><input type="checkbox" data-c="s2a"> export_policy.py printed max|jax-numpy| below 1e-4</label>`},
+ {t:'Put it on a real G1',h:`<h3>The 50 Hz loop on hardware</h3><ol style="padding-left:1.2em">
+<li>Read IMU (gyro, gravity) and the 29 joint positions and velocities from the low-level state, Unitree joint order.</li>
+<li>Feed the depth frame plus a depth render of the robot's own body (from joint angles) to <code>vision.BallPerception</code>. It returns the ball's position and velocity via <code>vision.BallKalman</code>.</li>
+<li>Call <code>policy.DribbleTracker.update(ball_pos, ball_vel, feet, hand_contact, body_left)</code> for the four task cues.</li>
+<li>Build the observation dict and call <code>policy.Policy.act(obs)</code>. Call <code>reset()</code> once at start.</li>
+<li>Send the 29 targets to the motors with Unitree's deployment gains.</li></ol>
+<p><code>evaluate_vision.py</code> is this exact loop against the simulator. Port it line for line.</p>
+<label class="check"><input type="checkbox" data-c="s3a"> hand-contact signal under 20 ms (wrist current transient or ball velocity jump at the palm)</label>
+<label class="check"><input type="checkbox" data-c="s3b"> camera is on Unitree's stock mount (47.6° down) or the scene file was updated and stage 3 re-run</label>
+<label class="check"><input type="checkbox" data-c="s3c"> ball inflated to spec: 1.8 m drop rebounds 1.2–1.4 m</label>
+<label class="check"><input type="checkbox" data-c="s3d"> robot in the staggered stance from assets/stance.json, ball handed to it at hip height on the left</label>
+<label class="check"><input type="checkbox" data-c="s3e"> gantry or harness attached for the first runs</label>
+<p class="muted" style="font-size:.85rem">Everything on this site was measured in simulation. Hardware is your adventure; the package was built so that it is a short one.</p>`},
+];
+const stepsEl=$('#steps'),stepBody=$('#stepBody');let checks={};try{checks=JSON.parse(localStorage.getItem('brunson_checks')||'{}')}catch(e){}
+STEPS.forEach((s,i)=>{const d=document.createElement('div');d.className='step';d.innerHTML=`<span class="num">${i+1}</span><span>${s.t}</span>`;d.onclick=()=>showStep(i);stepsEl.appendChild(d)});
+function showStep(i){
+  $$('.step').forEach((e,j)=>e.classList.toggle('on',i===j));stepBody.innerHTML=STEPS[i].h;
+  $$('#stepBody pre').forEach(p=>{const b=document.createElement('button');b.className='copy';b.textContent='copy';b.onclick=()=>{navigator.clipboard.writeText(p.querySelector('code').innerText);b.textContent='copied';setTimeout(()=>b.textContent='copy',1200)};p.appendChild(b)});
+  $$('#stepBody input[data-c]').forEach(c=>{c.checked=!!checks[c.dataset.c];c.onchange=()=>{checks[c.dataset.c]=c.checked;try{localStorage.setItem('brunson_checks',JSON.stringify(checks))}catch(e){}markDone()}});
+  markDone();
+}
+function markDone(){STEPS.forEach((s,i)=>{const ids=[...s.h.matchAll(/data-c="(\w+)"/g)].map(m=>m[1]);$$('.step')[i].classList.toggle('done',ids.length&&ids.every(id=>checks[id]))})}
+showStep(0);
+
+/* ---------- BRUNSON: confetti + name generator ---------- */
+(()=>{
+  const c=$('#confetti'),x=c.getContext('2d');let parts=[];
+  function size(){c.width=innerWidth;c.height=innerHeight}size();addEventListener('resize',size);
+  function burst(){for(let i=0;i<160;i++)parts.push({x:innerWidth/2+(Math.random()-.5)*300,y:innerHeight*.6,vx:(Math.random()-.5)*14,vy:-Math.random()*16-4,c:Math.random()<.5?'#F58426':'#006BB6',r:Math.random()*6+3,a:1,rot:Math.random()*6})}
+  function tick(){x.clearRect(0,0,c.width,c.height);parts.forEach(p=>{p.vy+=.35;p.x+=p.vx;p.y+=p.vy;p.a-=.008;p.rot+=.1;x.save();x.translate(p.x,p.y);x.rotate(p.rot);x.globalAlpha=Math.max(0,p.a);x.fillStyle=p.c;x.fillRect(-p.r,-p.r/2,p.r*2,p.r);x.restore()});parts=parts.filter(p=>p.a>0);requestAnimationFrame(tick)}tick();
+  const j=$('#jersey');let clicks=0;const cheers=['BING BONG','GO NEW YORK GO','clutch.','Villanova connection','11 on the back, 44 on the stat sheet','okay that is enough confetti','…one more'];
+  j.onclick=()=>{burst();$('#jersey').nextElementSibling.textContent=cheers[clicks++%cheers.length]};
+  const first=['G1','H1','B2','Go2','Atlas','Figure','Optimus','Digit','Unitree','Apollo'];
+  const guards=['Brunson','Haliburton','Curry','Kyrie','Nash','Iverson','Rondo','Paul','Maravich','Kidd','Isiah','Doncic','SGA','Trae','Ja'];
+  const suffix=['','',' Jr.',' (rookie)',' v2',' but low',' with rubber hands',' feat. Kalman filter'];
+  $('#genBtn').onclick=()=>{const n=first[Math.random()*first.length|0]+' '+guards[Math.random()*guards.length|0]+suffix[Math.random()*suffix.length|0];const el=$('#namegen');el.textContent='';let i=0;const iv=setInterval(()=>{el.textContent=n.slice(0,++i);if(i>=n.length)clearInterval(iv)},28)};
+})();
+</script>
+</body>
+</html>
