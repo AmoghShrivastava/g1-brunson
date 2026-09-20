@@ -92,6 +92,8 @@ python evaluate_mjx.py --episodes 12 --video_episodes 2    # -> evaluation/resul
 python replay_viewer.py evaluation/traj_trained_ep0.npz    # interactive 3-D viewer
 ```
 
+The same files are mirrored on Hugging Face: `hf download AmoghShrivastava1/g1-brunson --local-dir g1-brunson` (weights, checkpoint, code and results). Interactive 3-D replay and head-camera frames: [dribble.tenacelabs.com](https://dribble.tenacelabs.com).
+
 Camera-in-the-loop test (renders the head camera every step, slower):
 
 ```bash
