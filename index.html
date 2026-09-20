@@ -37,7 +37,7 @@ section{padding:72px 0}
 .grid{display:grid;gap:18px}
 .g2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
 .g3{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
-.btn{appearance:none;border:2px solid var(--ink);background:var(--ink);color:#fff;font:inherit;font-weight:600;padding:.6em 1.1em;border-radius:999px;cursor:pointer;transition:transform .08s,background .15s;user-select:none}
+.btn{appearance:none;display:inline-flex;align-items:center;border:2px solid var(--ink);background:var(--ink);color:#fff;font:inherit;font-weight:600;padding:.6em 1.1em;border-radius:999px;cursor:pointer;transition:transform .08s,background .15s;user-select:none}
 .btn:hover{transform:translateY(-1px)}
 .btn:active{transform:translateY(1px) scale(.98)}
 .btn.ghost{background:transparent;color:var(--ink)}
@@ -213,7 +213,8 @@ footer{padding:40px 0;border-top:1px solid var(--line);font-size:.9rem;color:var
         <div class="stat"><b data-count="0">0</b><span>falls in 12 tests</span></div>
       </div>
       <a class="btn orange" href="#replay">Fly around it in 3-D ↓</a>
-      <a class="btn ghost" href="https://github.com/AmoghShrivastava/g1-brunson" target="_blank" rel="noopener">Code on GitHub</a>
+      <a class="btn ghost" href="https://github.com/AmoghShrivastava/g1-brunson" target="_blank" rel="noopener"><svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" style="vertical-align:-3px;margin-right:6px"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>Code on GitHub</a>
+      <a class="btn ghost" href="https://huggingface.co/AmoghShrivastava1/g1-brunson" target="_blank" rel="noopener"><span style="margin-right:6px;vertical-align:-2px">🤗</span>Weights on Hugging Face</a>
     </div>
     <div class="hero-video">
       <span class="tag">simulation · standard 20 s test · real-time</span>
@@ -333,7 +334,7 @@ footer{padding:40px 0;border-top:1px solid var(--line);font-size:.9rem;color:var
     <h2>Built for the HIM Arena sports robotics challenge.</h2>
     <p>HIM Arena's Open Build challenge asks for a humanoid skill that is grounded in real physics, evaluated honestly, and shipped as a package anyone can run: a policy, a simulator, and a writeup. Here is how G1 Brunson answered each line of that brief. Click a card.</p>
     <div class="arena-grid reveal" id="arenaGrid"></div>
-    <p style="margin-top:18px"><a class="btn blue" href="https://arena.himrobotics.com/uploads/source_641045110d48de6239e5" target="_blank" rel="noopener">See the arena entry</a> <a class="btn ghost" href="https://github.com/AmoghShrivastava/g1-brunson" target="_blank" rel="noopener">Download the package</a></p>
+    <p style="margin-top:18px"><a class="btn blue" href="https://arena.himrobotics.com/uploads/source_641045110d48de6239e5" target="_blank" rel="noopener">See the arena entry</a> <a class="btn ghost" href="https://github.com/AmoghShrivastava/g1-brunson" target="_blank" rel="noopener"><svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" style="vertical-align:-3px;margin-right:6px"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>Download the package</a></p>
   </div>
 </section>
 
@@ -377,6 +378,7 @@ footer{padding:40px 0;border-top:1px solid var(--line);font-size:.9rem;color:var
       <span><b style="color:var(--ink)">G1 Brunson</b> · Tenace Labs · 2026</span>
       <a href="https://github.com/AmoghShrivastava/g1-brunson" target="_blank" rel="noopener">GitHub</a>
       <a href="https://arena.himrobotics.com/uploads/source_641045110d48de6239e5" target="_blank" rel="noopener">HIM Arena entry</a>
+      <a href="https://huggingface.co/AmoghShrivastava1/g1-brunson" target="_blank" rel="noopener">Hugging Face</a>
       <span style="margin-left:auto">MIT licence · Unitree G1 description BSD-3 · Not affiliated with the NBA or the Knicks, just fans.</span>
     </div>
   </div>
