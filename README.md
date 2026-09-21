@@ -28,6 +28,21 @@ G1 Brunson is a whole-body controller for the standard Unitree G1 (29 joints, ru
 
 With the **head camera as the only source of ball information**, the same controller performs 41.8 crossovers per 20 s with no falls.
 
+## How the robot sees the ball
+
+There is no sensor on the ball. The only source of ball information is the G1's head camera, an Intel RealSense D435i tilted 47.6° down, and this is what the perception module makes of it during the recorded test (rendered by MuJoCo, run through `vision.py` at every control step):
+
+<p align="center"><img src="docs/perception.gif" width="800" alt="Head-camera perception: colour stream, depth stream, foreign pixels, sphere fit and tracker"></p>
+
+1. **Colour stream** (top left). The RGB image the camera would deliver. Only used as a fallback, because orange balls look grey in bad light and floors can be orange.
+2. **Depth stream** (top right). The primary sensor. Wider field of view than colour (87° × 58°), near is bright, lighting-independent.
+3. **Depth minus the robot's own body** (bottom left). From its joint angles the robot renders what its own body should look like to the depth camera and subtracts it; the floor cancels too. Whatever remains and is closer than the body is a foreign object: the ball.
+4. **Sphere fit + tracker** (bottom right). A sphere of the known radius (0.11926 m) is fitted to those pixels, giving the ball's centre to about 2 mm. When the ball is hidden under the body the circle turns white: a Kalman tracker with a ballistic bounce model carries it through until it reappears.
+
+Over the whole 20-second episode: 97 % of frames detected, 2 mm detection error, 4 mm tracker error. Full-resolution videos of all four streams, and the composite, are on Hugging Face: [composite](https://huggingface.co/AmoghShrivastava1/g1-brunson/resolve/main/perception/perception_composite.mp4) · [colour](https://huggingface.co/AmoghShrivastava1/g1-brunson/resolve/main/perception/perception_colour.mp4) · [depth](https://huggingface.co/AmoghShrivastava1/g1-brunson/resolve/main/perception/perception_depth.mp4) · [foreign pixels](https://huggingface.co/AmoghShrivastava1/g1-brunson/resolve/main/perception/perception_mask.mp4) · [detection + tracker](https://huggingface.co/AmoghShrivastava1/g1-brunson/resolve/main/perception/perception_detection.mp4).
+
+The same tracker, with its noise and dropouts, was replicated inside the training environment, so the controller was trained on exactly the kind of estimate the real camera produces. With the camera in the loop it scores 41.8 crossovers per 20 s versus 44.3 with perfect information.
+
 ## Results
 
 Every test is 12 episodes of 20 s with fixed seeds, so the numbers are repeatable. A do-nothing controller runs on the identical episodes as a control.
@@ -54,7 +69,7 @@ Raw data: [`evaluation/results.json`](evaluation/results.json), [`evaluation/epi
 
 **Reward.** The crossover is scored as a sequence of events, not a distance: +3 for a bounce that lands between the feet, travels toward the receiving hand, follows a hand contact and rose to at least 0.30 m; +2 when the receiving hand catches it; +2 for chaining into the next crossover; +1 per dribble contact. Penalties for a bounce that is not a crossover, the wrong hand, a lost ball, a low dribble and a fall, plus the usual posture, foot-planting and smoothness terms. All terms are in `dribble_env.py`.
 
-**Perception.** The G1's head camera (Intel RealSense D435i) is used depth-first: the depth image is compared with a render of the robot's own body from its joint sensors, anything closer than the robot's body is the ball, and a sphere of known radius is fitted to it. Colour is the fallback. A Kalman tracker with a ballistic bounce model carries the ball through the moments it is hidden under the body. The **same tracker is replicated inside the training environment**, so the controller was trained on exactly the kind of estimate the real camera produces.
+**Perception.** See [How the robot sees the ball](#how-the-robot-sees-the-ball) above: depth-first detection against a self-render of the robot's body, sphere fit, Kalman tracker, replicated inside training.
 
 **Robustness.** Training randomised link masses, motor gains, friction, ball mass and bounce, sensor offsets and noise, tracker delay up to 40 ms, and applied random pushes to the hips.
 
