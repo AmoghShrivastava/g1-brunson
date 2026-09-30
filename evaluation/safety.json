@@ -1,0 +1,479 @@
+{
+ "episodes": 12,
+ "control_steps": 12000,
+ "seconds_simulated": 240.0,
+ "falls": 0,
+ "falls_by_episode": [
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0
+ ],
+ "joint_limit_violations_steps": 10557,
+ "torque_saturation_steps": 705,
+ "peak_torque_utilisation_pct": 100.0,
+ "mean_torque_utilisation_pct": 11.0,
+ "peak_joint_speed_rad_s": 30.29,
+ "min_margin_to_any_joint_limit_pct": -21.5,
+ "base_height_m": {
+  "min": 0.614,
+  "mean": 0.679,
+  "max": 0.746
+ },
+ "base_tilt_deg": {
+  "max": 30.6,
+  "mean": 13.5
+ },
+ "action": {
+  "max_abs": 1.0,
+  "max_step_change": 1.992,
+  "mean_step_change": 0.854,
+  "note": "actions are tanh-bounded to [-1,1]; joint target = stance + action * ACTION_SCALE (<= 0.8 rad legs, 0.25 rad ankles)"
+ },
+ "limits_source": "Unitree g1_29dof_rev_1_0 joint ranges and actuator torque limits (assets/g1_robot.xml)",
+ "per_joint": [
+  {
+   "joint": "left_hip_pitch",
+   "torque_limit_Nm": 88.0,
+   "peak_torque_pct": 68.1,
+   "mean_torque_pct": 18.2,
+   "rms_torque_Nm": 19.67,
+   "peak_joint_speed_rad_s": 5.37,
+   "min_margin_to_joint_limit_pct": 22.2,
+   "range_deg": [
+    -145.0,
+    165.0
+   ],
+   "steps_beyond_range_pct": 0.0,
+   "max_beyond_range_deg": 0.0
+  },
+  {
+   "joint": "left_hip_roll",
+   "torque_limit_Nm": 139.0,
+   "peak_torque_pct": 45.7,
+   "mean_torque_pct": 11.1,
+   "rms_torque_Nm": 18.54,
+   "peak_joint_speed_rad_s": 5.67,
+   "min_margin_to_joint_limit_pct": 15.1,
+   "range_deg": [
+    -30.0,
+    170.0
+   ],
+   "steps_beyond_range_pct": 0.0,
+   "max_beyond_range_deg": 0.0
+  },
+  {
+   "joint": "left_hip_yaw",
+   "torque_limit_Nm": 88.0,
+   "peak_torque_pct": 44.0,
+   "mean_torque_pct": 10.6,
+   "rms_torque_Nm": 10.99,
+   "peak_joint_speed_rad_s": 10.45,
+   "min_margin_to_joint_limit_pct": 35.6,
+   "range_deg": [
+    -158.0,
+    158.0
+   ],
+   "steps_beyond_range_pct": 0.0,
+   "max_beyond_range_deg": 0.0
+  },
+  {
+   "joint": "left_knee",
+   "torque_limit_Nm": 139.0,
+   "peak_torque_pct": 41.3,
+   "mean_torque_pct": 6.7,
+   "rms_torque_Nm": 11.66,
+   "peak_joint_speed_rad_s": 5.57,
+   "min_margin_to_joint_limit_pct": 13.5,
+   "range_deg": [
+    -5.0,
+    165.0
+   ],
+   "steps_beyond_range_pct": 0.0,
+   "max_beyond_range_deg": 0.0
+  },
+  {
+   "joint": "left_ankle_pitch",
+   "torque_limit_Nm": 50.0,
+   "peak_torque_pct": 69.2,
+   "mean_torque_pct": 12.9,
+   "rms_torque_Nm": 8.29,
+   "peak_joint_speed_rad_s": 9.12,
+   "min_margin_to_joint_limit_pct": 2.7,
+   "range_deg": [
+    -50.0,
+    30.0
+   ],
+   "steps_beyond_range_pct": 0.0,
+   "max_beyond_range_deg": 0.0
+  },
+  {
+   "joint": "left_ankle_roll",
+   "torque_limit_Nm": 50.0,
+   "peak_torque_pct": 30.0,
+   "mean_torque_pct": 3.9,
+   "rms_torque_Nm": 2.71,
+   "peak_joint_speed_rad_s": 7.56,
+   "min_margin_to_joint_limit_pct": -21.5,
+   "range_deg": [
+    -15.0,
+    15.0
+   ],
+   "steps_beyond_range_pct": 54.2,
+   "max_beyond_range_deg": 6.45
+  },
+  {
+   "joint": "right_hip_pitch",
+   "torque_limit_Nm": 88.0,
+   "peak_torque_pct": 68.0,
+   "mean_torque_pct": 23.9,
+   "rms_torque_Nm": 24.82,
+   "peak_joint_speed_rad_s": 6.36,
+   "min_margin_to_joint_limit_pct": 21.3,
+   "range_deg": [
+    -145.0,
+    165.0
+   ],
+   "steps_beyond_range_pct": 0.0,
+   "max_beyond_range_deg": 0.0
+  },
+  {
+   "joint": "right_hip_roll",
+   "torque_limit_Nm": 139.0,
+   "peak_torque_pct": 39.3,
+   "mean_torque_pct": 9.0,
+   "rms_torque_Nm": 15.5,
+   "peak_joint_speed_rad_s": 5.03,
+   "min_margin_to_joint_limit_pct": 13.4,
+   "range_deg": [
+    -170.0,
+    30.0
+   ],
+   "steps_beyond_range_pct": 0.0,
+   "max_beyond_range_deg": 0.0
+  },
+  {
+   "joint": "right_hip_yaw",
+   "torque_limit_Nm": 88.0,
+   "peak_torque_pct": 48.7,
+   "mean_torque_pct": 11.9,
+   "rms_torque_Nm": 12.39,
+   "peak_joint_speed_rad_s": 9.18,
+   "min_margin_to_joint_limit_pct": 34.3,
+   "range_deg": [
+    -158.0,
+    158.0
+   ],
+   "steps_beyond_range_pct": 0.0,
+   "max_beyond_range_deg": 0.0
+  },
+  {
+   "joint": "right_knee",
+   "torque_limit_Nm": 139.0,
+   "peak_torque_pct": 42.2,
+   "mean_torque_pct": 6.6,
+   "rms_torque_Nm": 11.8,
+   "peak_joint_speed_rad_s": 4.97,
+   "min_margin_to_joint_limit_pct": 14.7,
+   "range_deg": [
+    -5.0,
+    165.0
+   ],
+   "steps_beyond_range_pct": 0.0,
+   "max_beyond_range_deg": 0.0
+  },
+  {
+   "joint": "right_ankle_pitch",
+   "torque_limit_Nm": 50.0,
+   "peak_torque_pct": 57.8,
+   "mean_torque_pct": 13.2,
+   "rms_torque_Nm": 8.32,
+   "peak_joint_speed_rad_s": 9.45,
+   "min_margin_to_joint_limit_pct": 5.9,
+   "range_deg": [
+    -50.0,
+    30.0
+   ],
+   "steps_beyond_range_pct": 0.0,
+   "max_beyond_range_deg": 0.0
+  },
+  {
+   "joint": "right_ankle_roll",
+   "torque_limit_Nm": 50.0,
+   "peak_torque_pct": 27.1,
+   "mean_torque_pct": 4.2,
+   "rms_torque_Nm": 2.89,
+   "peak_joint_speed_rad_s": 8.09,
+   "min_margin_to_joint_limit_pct": -12.0,
+   "range_deg": [
+    -15.0,
+    15.0
+   ],
+   "steps_beyond_range_pct": 45.0,
+   "max_beyond_range_deg": 3.59
+  },
+  {
+   "joint": "waist_yaw",
+   "torque_limit_Nm": 88.0,
+   "peak_torque_pct": 34.5,
+   "mean_torque_pct": 6.5,
+   "rms_torque_Nm": 7.28,
+   "peak_joint_speed_rad_s": 6.53,
+   "min_margin_to_joint_limit_pct": 38.5,
+   "range_deg": [
+    -150.0,
+    150.0
+   ],
+   "steps_beyond_range_pct": 0.0,
+   "max_beyond_range_deg": 0.0
+  },
+  {
+   "joint": "waist_roll",
+   "torque_limit_Nm": 50.0,
+   "peak_torque_pct": 54.9,
+   "mean_torque_pct": 13.4,
+   "rms_torque_Nm": 8.38,
+   "peak_joint_speed_rad_s": 6.63,
+   "min_margin_to_joint_limit_pct": -2.3,
+   "range_deg": [
+    -29.8,
+    29.8
+   ],
+   "steps_beyond_range_pct": 0.2,
+   "max_beyond_range_deg": 1.37
+  },
+  {
+   "joint": "waist_pitch",
+   "torque_limit_Nm": 50.0,
+   "peak_torque_pct": 52.7,
+   "mean_torque_pct": 17.5,
+   "rms_torque_Nm": 9.73,
+   "peak_joint_speed_rad_s": 5.57,
+   "min_margin_to_joint_limit_pct": -4.4,
+   "range_deg": [
+    -29.8,
+    29.8
+   ],
+   "steps_beyond_range_pct": 63.1,
+   "max_beyond_range_deg": 2.62
+  },
+  {
+   "joint": "left_shoulder_pitch",
+   "torque_limit_Nm": 25.0,
+   "peak_torque_pct": 100.0,
+   "mean_torque_pct": 20.8,
+   "rms_torque_Nm": 6.36,
+   "peak_joint_speed_rad_s": 8.94,
+   "min_margin_to_joint_limit_pct": 32.2,
+   "range_deg": [
+    -177.0,
+    153.0
+   ],
+   "steps_beyond_range_pct": 0.0,
+   "max_beyond_range_deg": 0.0
+  },
+  {
+   "joint": "left_shoulder_roll",
+   "torque_limit_Nm": 25.0,
+   "peak_torque_pct": 72.9,
+   "mean_torque_pct": 15.3,
+   "rms_torque_Nm": 4.88,
+   "peak_joint_speed_rad_s": 8.67,
+   "min_margin_to_joint_limit_pct": 30.7,
+   "range_deg": [
+    -91.0,
+    129.0
+   ],
+   "steps_beyond_range_pct": 0.0,
+   "max_beyond_range_deg": 0.0
+  },
+  {
+   "joint": "left_shoulder_yaw",
+   "torque_limit_Nm": 25.0,
+   "peak_torque_pct": 58.4,
+   "mean_torque_pct": 6.6,
+   "rms_torque_Nm": 2.25,
+   "peak_joint_speed_rad_s": 13.28,
+   "min_margin_to_joint_limit_pct": 35.8,
+   "range_deg": [
+    -150.0,
+    150.0
+   ],
+   "steps_beyond_range_pct": 0.0,
+   "max_beyond_range_deg": 0.0
+  },
+  {
+   "joint": "left_elbow",
+   "torque_limit_Nm": 25.0,
+   "peak_torque_pct": 57.9,
+   "mean_torque_pct": 8.0,
+   "rms_torque_Nm": 2.59,
+   "peak_joint_speed_rad_s": 15.62,
+   "min_margin_to_joint_limit_pct": 12.9,
+   "range_deg": [
+    -60.0,
+    120.0
+   ],
+   "steps_beyond_range_pct": 0.0,
+   "max_beyond_range_deg": 0.0
+  },
+  {
+   "joint": "left_wrist_roll",
+   "torque_limit_Nm": 25.0,
+   "peak_torque_pct": 56.5,
+   "mean_torque_pct": 1.1,
+   "rms_torque_Nm": 0.52,
+   "peak_joint_speed_rad_s": 14.17,
+   "min_margin_to_joint_limit_pct": 31.1,
+   "range_deg": [
+    -113.0,
+    113.0
+   ],
+   "steps_beyond_range_pct": 0.0,
+   "max_beyond_range_deg": 0.0
+  },
+  {
+   "joint": "left_wrist_pitch",
+   "torque_limit_Nm": 5.0,
+   "peak_torque_pct": 100.0,
+   "mean_torque_pct": 13.7,
+   "rms_torque_Nm": 1.0,
+   "peak_joint_speed_rad_s": 24.09,
+   "min_margin_to_joint_limit_pct": 19.7,
+   "range_deg": [
+    -92.5,
+    92.5
+   ],
+   "steps_beyond_range_pct": 0.0,
+   "max_beyond_range_deg": 0.0
+  },
+  {
+   "joint": "left_wrist_yaw",
+   "torque_limit_Nm": 5.0,
+   "peak_torque_pct": 100.0,
+   "mean_torque_pct": 9.5,
+   "rms_torque_Nm": 0.93,
+   "peak_joint_speed_rad_s": 25.69,
+   "min_margin_to_joint_limit_pct": 25.5,
+   "range_deg": [
+    -92.5,
+    92.5
+   ],
+   "steps_beyond_range_pct": 0.0,
+   "max_beyond_range_deg": 0.0
+  },
+  {
+   "joint": "right_shoulder_pitch",
+   "torque_limit_Nm": 25.0,
+   "peak_torque_pct": 100.0,
+   "mean_torque_pct": 21.3,
+   "rms_torque_Nm": 6.55,
+   "peak_joint_speed_rad_s": 10.02,
+   "min_margin_to_joint_limit_pct": 30.8,
+   "range_deg": [
+    -177.0,
+    153.0
+   ],
+   "steps_beyond_range_pct": 0.0,
+   "max_beyond_range_deg": 0.0
+  },
+  {
+   "joint": "right_shoulder_roll",
+   "torque_limit_Nm": 25.0,
+   "peak_torque_pct": 87.3,
+   "mean_torque_pct": 13.8,
+   "rms_torque_Nm": 4.44,
+   "peak_joint_speed_rad_s": 9.25,
+   "min_margin_to_joint_limit_pct": 29.5,
+   "range_deg": [
+    -129.0,
+    91.0
+   ],
+   "steps_beyond_range_pct": 0.0,
+   "max_beyond_range_deg": 0.0
+  },
+  {
+   "joint": "right_shoulder_yaw",
+   "torque_limit_Nm": 25.0,
+   "peak_torque_pct": 73.9,
+   "mean_torque_pct": 5.3,
+   "rms_torque_Nm": 1.88,
+   "peak_joint_speed_rad_s": 15.48,
+   "min_margin_to_joint_limit_pct": 36.2,
+   "range_deg": [
+    -150.0,
+    150.0
+   ],
+   "steps_beyond_range_pct": 0.0,
+   "max_beyond_range_deg": 0.0
+  },
+  {
+   "joint": "right_elbow",
+   "torque_limit_Nm": 25.0,
+   "peak_torque_pct": 63.5,
+   "mean_torque_pct": 8.6,
+   "rms_torque_Nm": 2.85,
+   "peak_joint_speed_rad_s": 14.45,
+   "min_margin_to_joint_limit_pct": 11.8,
+   "range_deg": [
+    -60.0,
+    120.0
+   ],
+   "steps_beyond_range_pct": 0.0,
+   "max_beyond_range_deg": 0.0
+  },
+  {
+   "joint": "right_wrist_roll",
+   "torque_limit_Nm": 25.0,
+   "peak_torque_pct": 31.2,
+   "mean_torque_pct": 1.0,
+   "rms_torque_Nm": 0.41,
+   "peak_joint_speed_rad_s": 16.05,
+   "min_margin_to_joint_limit_pct": 30.8,
+   "range_deg": [
+    -113.0,
+    113.0
+   ],
+   "steps_beyond_range_pct": 0.0,
+   "max_beyond_range_deg": 0.0
+  },
+  {
+   "joint": "right_wrist_pitch",
+   "torque_limit_Nm": 5.0,
+   "peak_torque_pct": 100.0,
+   "mean_torque_pct": 15.7,
+   "rms_torque_Nm": 1.19,
+   "peak_joint_speed_rad_s": 28.58,
+   "min_margin_to_joint_limit_pct": 11.5,
+   "range_deg": [
+    -92.5,
+    92.5
+   ],
+   "steps_beyond_range_pct": 0.0,
+   "max_beyond_range_deg": 0.0
+  },
+  {
+   "joint": "right_wrist_yaw",
+   "torque_limit_Nm": 5.0,
+   "peak_torque_pct": 100.0,
+   "mean_torque_pct": 7.6,
+   "rms_torque_Nm": 0.74,
+   "peak_joint_speed_rad_s": 30.29,
+   "min_margin_to_joint_limit_pct": 27.6,
+   "range_deg": [
+    -92.5,
+    92.5
+   ],
+   "steps_beyond_range_pct": 0.0,
+   "max_beyond_range_deg": 0.0
+  }
+ ]
+}

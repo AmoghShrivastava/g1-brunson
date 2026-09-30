@@ -78,6 +78,10 @@ Raw data: [`evaluation/results.json`](evaluation/results.json), [`evaluation/epi
 ```
 policy.py              controller: MLPPolicy (numpy, no JAX needed) + DribbleTracker (task cues)
 policy_weights.npz     trained weights of G1 Brunson
+policy.onnx            the same network as ONNX (obs[N,115] -> action[N,29]); arena-policy.json describes it
+SAFETY.md              safety evidence from the simulator: joint stops, torque saturation, speeds, tilt, falls
+export_onnx.py         policy_weights.npz -> policy.onnx (verified against the numpy forward pass)
+safety_check.py        reproduces evaluation/safety.json
 vision.py              head-camera ball perception (depth-first, colour backup, Kalman tracker)
 dribble_env.py         MJX training environment, reward, domain randomisation, perception emulation
 train.py               PPO training (Brax)
@@ -181,6 +185,8 @@ python evaluate_vision.py --episodes 6 --env_contact                       # cam
 Expected: about 44 crossovers, 0 falls, do-nothing control 0 crossovers. Seeds are fixed (`--seed 1000`), so the numbers should match `evaluation/` to within GPU nondeterminism.
 
 ## Deploy on a real G1
+
+Read [`SAFETY.md`](SAFETY.md) first. Two things it flags: the crouch loads the waist pitch and ankle roll joints against their stops for about half of each episode, and the 5 Nm wrist motors saturate briefly on every ball strike. Zero falls in 12 clean episodes; about 3 % under training-time randomisation.
 
 The controller has no JAX dependency at run time. `policy.py` is plain numpy, and the loop is the standard Unitree low-level position-control loop.
 

@@ -1,0 +1,16 @@
+{
+  "policy_type": "trained",
+  "model": "policy.onnx",
+  "robot": "unitree-g1",
+  "control_hz": 50,
+  "observation": {
+    "size": 115,
+    "layout": "gyro(3), gravity_in_base(3), joint_pos_rel(29), joint_vel(29), previous_action(29), ball_rel_history(3x[pos(3),vel(3)]), task_cues(4)",
+    "source": "IMU + joint encoders + head-camera ball tracker (vision.py) + cue bookkeeping (policy.DribbleTracker)"
+  },
+  "action": {
+    "size": 29,
+    "semantics": "joint position targets = stance_targets + action * ACTION_SCALE (policy.py), Unitree joint order, PD with Unitree deployment gains"
+  },
+  "notes": "Not a locomotion policy: the observation includes the tracked basketball, so it does not match the g1-walker-99-v1 safety adapter. Safety evidence from the packaged simulator is in SAFETY.md and evaluation/safety.json."
+}
