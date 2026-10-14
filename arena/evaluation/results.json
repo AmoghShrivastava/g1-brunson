@@ -1,0 +1,67 @@
+{
+ "trained": {
+  "stance": 0.6666666666666666,
+  "crossings": 17.0,
+  "touches": 28.833333333333332,
+  "catches": 13.416666666666666,
+  "chains": 9.666666666666666,
+  "resets": 12.0,
+  "bad_bounces": 11.833333333333334,
+  "kicks": 0.0,
+  "recoveries": 0.0,
+  "wrong_hand": 0.16666666666666666,
+  "fell": 0.08333333333333333,
+  "steps": 940.5,
+  "feet_off_steps": 3.75,
+  "ball_apex_mean": 0.3549708709616322,
+  "pelvis_z_mean": 0.6077832658578467,
+  "max_abs_action": 0.9761973271767298,
+  "mean_dribble_period_s": 0.31685675623744797,
+  "success": 0.9166666666666666,
+  "episodes": 12
+ },
+ "neutral": {
+  "stance": 0.6666666666666666,
+  "crossings": 0.0,
+  "touches": 1.25,
+  "catches": 0.0,
+  "chains": 0.0,
+  "resets": 1.6666666666666667,
+  "bad_bounces": 0.9166666666666666,
+  "kicks": 0.0,
+  "recoveries": 0.0,
+  "wrong_hand": 0.0,
+  "fell": 1.0,
+  "steps": 75.16666666666667,
+  "feet_off_steps": 0.25,
+  "ball_apex_mean": 0.39411379003690356,
+  "pelvis_z_mean": 0.6248750637634634,
+  "max_abs_action": 0.0,
+  "mean_dribble_period_s": 0.32655555555555554,
+  "success": 0.0,
+  "episodes": 12
+ },
+ "settings": {
+  "weights": "/workspace/v11_w.npz",
+  "episodes": 12,
+  "seconds": 20.0,
+  "seed": 1000,
+  "video_episodes": 1,
+  "camera": "side",
+  "success_crossings": 6,
+  "out": "/workspace/v11_eval",
+  "save_traj": 1,
+  "override": [
+   "safety_config.enable=true",
+   "safety_config.clamp_action_to_range=true",
+   "safety_config.handover_clamp=true",
+   "safety_config.torque_limit_to_profile=true"
+  ],
+  "xml": "/workspace/g1dribble/assets/g1_dribble_scene.xml"
+ },
+ "causality": {
+  "trained_success_rate": 0.9166666666666666,
+  "neutral_success_rate": 0.0,
+  "passed": true
+ }
+}

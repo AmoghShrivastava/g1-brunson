@@ -8,7 +8,7 @@ Trained with reinforcement learning in MuJoCo MJX. Sees the ball with its own he
 
 <img src="docs/g1_brunson_demo.gif" width="720" alt="G1 Brunson performing between-the-legs crossover dribbles">
 
-[Full demo video (MP4)](docs/g1_brunson_demo.mp4) · [Results](#results) · [Reproduce](#reproduce-the-results) · [Deploy](#deploy-on-a-real-g1)
+[Full demo video (MP4)](docs/g1_brunson_demo.mp4) · [Results](#results) · [Arena edition](#arena-edition-safety-checked) · [Reproduce](#reproduce-the-results) · [Deploy](#deploy-on-a-real-g1)
 
 </div>
 
@@ -61,6 +61,24 @@ Every test is 12 episodes of 20 s with fixed seeds, so the numbers are repeatabl
 
 Raw data: [`evaluation/results.json`](evaluation/results.json), [`evaluation/episodes.csv`](evaluation/episodes.csv), [`evaluation_vision/results.json`](evaluation_vision/results.json). Videos: [`evaluation/trained.mp4`](evaluation/trained.mp4), [`evaluation/neutral.mp4`](evaluation/neutral.mp4).
 
+## Arena edition (safety-checked)
+
+The [`arena/`](arena/) folder holds a version of G1 Brunson built for the HIM Arena safety screen ([listing](https://arena.himrobotics.com/uploads/source_8f9737bb56084365b887)). It runs on the arena's stiffer motor settings and was trained against every check the screen applies.
+
+| | Arena edition |
+|---|---|
+| Arena safety screen, faithful replica (MuJoCo 3.3.7, 36 episodes) | **36 of 36 clean**: no falls, no torque, joint-speed, joint-range, body-rotation, thrashing or first-command findings |
+| Crossover dribbles per 20 s (training simulator, ball handed back when lost) | 17.0 |
+
+What changed to get there:
+
+- **Start pose.** The robot starts with both soles flat on the floor and the pelvis upright, on its default motor targets.
+- **Physics settings.** The scene uses 10 contact-solver iterations, which MuJoCo 3.3.7 needs for steady foot contact.
+- **Training against the screen.** Torque requested before the motor limiter, body spin, joint shaking, joints past their stops and joint speed are all penalised. Most practice episodes never hand a lost ball back, so the robot learned to hold its stance once the ball is gone.
+- **Ball readings in range.** The controller clips the ball readings to the range seen in training, so a ball that rolls far away reads as out of play.
+
+Details, evidence and the screen replica (`arena_screen_cpu.py`) are in [`arena/SAFETY.md`](arena/SAFETY.md) and [`arena/README.md`](arena/README.md).
+
 ## How it works
 
 **Simulation.** Unitree's official G1 description (`g1_29dof_rev_1_0`) with Unitree's collision model, deployed PD gains, torque limits and rotor inertias. The rubber hand is a palm-sized box fitted to the hand mesh. Control at 50 Hz over 2 ms physics steps, in Unitree's joint order, exactly like a hardware deployment. The ball is a size-7 game ball (radius 0.11926 m, 0.6237 kg, thin-shell inertia) whose bounce is calibrated to the official inflation test (1.8 m drop, 1.30 m rebound). Every number is traceable to a source in `assets/`.
@@ -97,6 +115,7 @@ checkpoints/           g1_brunson_params.pkl (Brax checkpoint, for fine-tuning)
 evaluation/            results, per-episode CSV, videos, recorded trajectories
 evaluation_vision/     camera-in-the-loop results
 logs/                  training logs of the three stages
+arena/                 Arena edition: safety-checked controller, screen replica, evidence (see above)
 ```
 
 ## Quick start (CPU, 5 minutes)

@@ -1,0 +1,20 @@
+{
+  "policy_type": "trained",
+  "model": "policy.onnx",
+  "safety_adapter": "g1-basketball-115-profile-v1",
+  "robot": "unitree-g1",
+  "control_hz": 50,
+  "observation": {
+    "size": 115,
+    "layout": "gyro(3), gravity_in_base(3), joint_pos_rel(29), joint_vel(29), previous_action(29), ball_rel_history(3x[pos(3),vel(3)]), task_cues(4)",
+    "source": "IMU + joint encoders + head-camera ball tracker (vision.py) + cue bookkeeping (policy.DribbleTracker)"
+  },
+  "action": {
+    "size": 29,
+    "semantics": "joint position targets = stance_targets + action * ACTION_SCALE (policy.py), Unitree joint order. The ONNX graph clips the ball readings to the trained range, clamps each target to the joint range, limits its change per step to 9 rad/s x 20 ms, and keeps the first command within 0.024 rad of the measured pose.",
+    "stance_targets": "assets/stance.json = the stance keyframes of assets/g1_dribble_scene.xml (start pose = default targets; obs[114] = +1 left foot forward, -1 right)"
+  },
+  "required_sensors": ["joint_state", "imu", "camera"],
+  "joint_profile": "assets/arena_g1_profile.json (HIM Arena g1_type5 template: PD gains, torque, speed, range limits; screening limits)",
+  "safety_evidence": "SAFETY.md, evaluation/arena_screen_cpu.json, evaluation/arena_screen_cpu_seed2000.json (arena_screen_cpu.py, MuJoCo 3.3.7)"
+}

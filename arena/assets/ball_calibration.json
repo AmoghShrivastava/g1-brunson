@@ -1,0 +1,18 @@
+{
+ "drop_bottom_m": 1.8,
+ "legal_rebound_top_m": [
+  1.2,
+  1.4
+ ],
+ "solref_timeconst": 0.03,
+ "solref_dampratio": 0.0834580368595198,
+ "dampratio_legal_range": [
+  0.07888306870590897,
+  0.10603097148705273
+ ],
+ "rebound_top_training_solver_m": 1.299999998003023,
+ "rebound_top_accurate_solver_m": 1.299999998003023,
+ "effective_cor": 0.7679337348448697,
+ "rebound_top_mjx_jax_m": 1.3406247501373292,
+ "rebound_top_mjx_warp_m": "failed: type object 'int' has no attribute 'WARP'"
+}

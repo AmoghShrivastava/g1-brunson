@@ -1,0 +1,163 @@
+{
+ "episodes": 12,
+ "clean_episodes": 12,
+ "falls": 0,
+ "mean_crossings": 0.0,
+ "episodes_with": {
+  "init_mismatch": 0,
+  "joint_torque": 0,
+  "joint_velocity": 0,
+  "joint_position": 0,
+  "base_angular_speed": 0,
+  "thrashing_energy": 0,
+  "fall": 0
+ },
+ "mujoco": "3.3.7",
+ "onnx": "p.onnx",
+ "per_episode": [
+  {
+   "seed": 1000,
+   "stance": 0,
+   "crossings": 0,
+   "seconds": 20.0,
+   "ball_lost_at": 2.54,
+   "clean": true,
+   "max_thrash_rms": 0.948,
+   "first_violation": {},
+   "worst_ratio": {},
+   "worst_joint": {}
+  },
+  {
+   "seed": 1001,
+   "stance": 1,
+   "crossings": 0,
+   "seconds": 20.0,
+   "ball_lost_at": 2.1,
+   "clean": true,
+   "max_thrash_rms": 0.707,
+   "first_violation": {},
+   "worst_ratio": {},
+   "worst_joint": {}
+  },
+  {
+   "seed": 1002,
+   "stance": 1,
+   "crossings": 0,
+   "seconds": 20.0,
+   "ball_lost_at": 2.64,
+   "clean": true,
+   "max_thrash_rms": 0.685,
+   "first_violation": {},
+   "worst_ratio": {},
+   "worst_joint": {}
+  },
+  {
+   "seed": 1003,
+   "stance": 0,
+   "crossings": 0,
+   "seconds": 20.0,
+   "ball_lost_at": 1.58,
+   "clean": true,
+   "max_thrash_rms": 0.959,
+   "first_violation": {},
+   "worst_ratio": {},
+   "worst_joint": {}
+  },
+  {
+   "seed": 1004,
+   "stance": 1,
+   "crossings": 0,
+   "seconds": 20.0,
+   "ball_lost_at": 2.4,
+   "clean": true,
+   "max_thrash_rms": 0.705,
+   "first_violation": {},
+   "worst_ratio": {},
+   "worst_joint": {}
+  },
+  {
+   "seed": 1005,
+   "stance": 0,
+   "crossings": 0,
+   "seconds": 20.0,
+   "ball_lost_at": 3.04,
+   "clean": true,
+   "max_thrash_rms": 0.952,
+   "first_violation": {},
+   "worst_ratio": {},
+   "worst_joint": {}
+  },
+  {
+   "seed": 1006,
+   "stance": 1,
+   "crossings": 0,
+   "seconds": 20.0,
+   "ball_lost_at": 2.46,
+   "clean": true,
+   "max_thrash_rms": 0.712,
+   "first_violation": {},
+   "worst_ratio": {},
+   "worst_joint": {}
+  },
+  {
+   "seed": 1007,
+   "stance": 0,
+   "crossings": 0,
+   "seconds": 20.0,
+   "ball_lost_at": 2.22,
+   "clean": true,
+   "max_thrash_rms": 0.974,
+   "first_violation": {},
+   "worst_ratio": {},
+   "worst_joint": {}
+  },
+  {
+   "seed": 1008,
+   "stance": 0,
+   "crossings": 0,
+   "seconds": 20.0,
+   "ball_lost_at": 0.8,
+   "clean": true,
+   "max_thrash_rms": 1.112,
+   "first_violation": {},
+   "worst_ratio": {},
+   "worst_joint": {}
+  },
+  {
+   "seed": 1009,
+   "stance": 1,
+   "crossings": 0,
+   "seconds": 20.0,
+   "ball_lost_at": 0.66,
+   "clean": true,
+   "max_thrash_rms": 0.668,
+   "first_violation": {},
+   "worst_ratio": {},
+   "worst_joint": {}
+  },
+  {
+   "seed": 1010,
+   "stance": 1,
+   "crossings": 0,
+   "seconds": 20.0,
+   "ball_lost_at": 2.28,
+   "clean": true,
+   "max_thrash_rms": 0.68,
+   "first_violation": {},
+   "worst_ratio": {},
+   "worst_joint": {}
+  },
+  {
+   "seed": 1011,
+   "stance": 0,
+   "crossings": 0,
+   "seconds": 20.0,
+   "ball_lost_at": 1.68,
+   "clean": true,
+   "max_thrash_rms": 0.973,
+   "first_violation": {},
+   "worst_ratio": {},
+   "worst_joint": {}
+  }
+ ]
+}

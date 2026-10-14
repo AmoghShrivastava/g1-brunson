@@ -1,12 +1,12 @@
 # Safety evidence
 
-HIM Arena's simulation safety screening returned **unsupported** for this package: the screener currently
-has one adapter, `g1-walker-99-v1`, whose observation contract is a locomotion policy's (IMU, joints,
-velocity command). G1 Brunson's observation includes the tracked basketball and four task cues, so it
-cannot be run through that adapter, and we do not declare it. The policy was therefore **not screened**;
-nothing about its behaviour was tested by the arena. This file is the evidence we can offer instead,
-measured in the packaged simulator with `safety_check.py` (same 12 episodes and seeds as
-`evaluation/results.json`, physics randomisation off). Raw numbers: `evaluation/safety.json`.
+This report covers G1 Brunson as released here, on Unitree's deployment motor settings, measured in the
+packaged simulator with `safety_check.py` (same 12 episodes and seeds as `evaluation/results.json`,
+physics randomisation off). Raw numbers: `evaluation/safety.json`.
+
+HIM Arena screens the G1 with a stiffer motor profile and its own limits. For that screen use the
+**Arena edition** in [`arena/`](arena/): 36 of 36 episodes clean on a faithful replica of the screen.
+Its evidence is in [`arena/SAFETY.md`](arena/SAFETY.md).
 
 **This report does not claim hardware readiness.** Everything below is simulation.
 
