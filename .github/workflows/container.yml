@@ -1,0 +1,62 @@
+name: G1 runner container
+
+on:
+  push:
+    branches: [container]
+    paths: ["container/**", ".github/workflows/container.yml"]
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch the HIM builder kit
+        run: |
+          curl -sL https://arena.himrobotics.com/policy-contracts/g1-builder-kit-e93c492-v1.zip -o kit.zip
+          unzip -q kit.zip -d kitsrc
+          mkdir -p kitsrc/g1-builder-kit/brunson
+          cp -r container/. kitsrc/g1-builder-kit/brunson/
+
+      - name: Build the linux/arm64 image
+        working-directory: kitsrc/g1-builder-kit
+        run: |
+          docker buildx build --platform linux/arm64 --load -f brunson/Dockerfile -t g1-submission:local .
+          docker image inspect g1-submission:local --format '{{.Os}}/{{.Architecture}} {{json .Config.Entrypoint}}'
+          mkdir -p containers/upload
+          docker save g1-submission:local -o containers/upload/submission.tar
+          sha256sum containers/upload/submission.tar | tee submission.sha256
+          ls -la containers/upload/submission.tar
+
+      - name: Container simulation, 60 s, safety checks on
+        working-directory: kitsrc/g1-builder-kit
+        run: bash sim.sh --seconds 60 --output out_60s || echo "sim exit $?" | tee -a sim_status.txt
+
+      - name: Container simulation, counterfactual starts
+        working-directory: kitsrc/g1-builder-kit
+        run: bash sim.sh --seconds 30 --counterfactuals --output out_counterfactuals || echo "counterfactual exit $?" | tee -a sim_status.txt
+
+      - name: Summaries
+        if: always()
+        working-directory: kitsrc/g1-builder-kit
+        run: |
+          for d in out_60s out_counterfactuals; do echo "== $d"; cat $d/builder-check.json 2>/dev/null | head -c 3000; echo; done
+          cat sim_status.txt 2>/dev/null || true
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: container-evidence
+          path: |
+            kitsrc/g1-builder-kit/out_60s
+            kitsrc/g1-builder-kit/out_counterfactuals
+            kitsrc/g1-builder-kit/submission.sha256
+            kitsrc/g1-builder-kit/sim_status.txt
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: submission-tar
+          path: kitsrc/g1-builder-kit/containers/upload/submission.tar
+          compression-level: 0
