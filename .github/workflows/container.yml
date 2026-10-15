@@ -70,18 +70,9 @@ jobs:
           [ "$status" = "simulation_checks_complete" ] || { echo "not publishing"; exit 0; }
           tag="runner-${GITHUB_SHA::7}"
           sha=$(cut -d' ' -f1 submission.sha256)
-          printf '{
-  "schema_version": 1,
-  "repository_commit": "e93c49267a7b6b905c6666c8c70668f8ee7ac397",
-  "image": {
-    "archive_url": "https://github.com/%s/releases/download/%s/submission.tar",
-    "sha256": "%s"
-  },
-  "required_sensors": ["joint_state", "imu", "camera"]
-}
-' "$GITHUB_REPOSITORY" "$tag" "$sha" > g1-runner.json
+          python3 -c "import json,sys; json.dump({'schema_version': 1, 'repository_commit': 'e93c49267a7b6b905c6666c8c70668f8ee7ac397', 'image': {'archive_url': 'https://github.com/' + sys.argv[1] + '/releases/download/' + sys.argv[2] + '/submission.tar', 'sha256': sys.argv[3]}, 'required_sensors': ['joint_state', 'imu', 'camera']}, open('g1-runner.json', 'w'), indent=2)" "$GITHUB_REPOSITORY" "$tag" "$sha"
           cat g1-runner.json
-          gh release create "$tag" containers/upload/submission.tar g1-runner.json submission.sha256             --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title "G1 Brunson runner image ${GITHUB_SHA::7}"             --notes "linux/arm64 runner image built from the HIM builder kit template (kit e93c492). sha256 $sha. Container simulation evidence: workflow run $GITHUB_RUN_ID."
+          gh release create "$tag" containers/upload/submission.tar g1-runner.json submission.sha256 --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title "G1 Brunson runner image ${GITHUB_SHA::7}" --notes "linux/arm64 runner image built from the HIM builder kit template (kit e93c492). sha256 $sha. Container simulation evidence: workflow run $GITHUB_RUN_ID."
 
       - uses: actions/upload-artifact@v4
         with:
