@@ -60,3 +60,37 @@ jobs:
           name: submission-tar
           path: kitsrc/g1-builder-kit/containers/upload/submission.tar
           compression-level: 0
+
+  template-control:
+    # control: the builder kit's own unmodified template image through the same counterfactual starts
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 90
+    steps:
+      - name: Fetch the HIM builder kit
+        run: |
+          curl -sL https://arena.himrobotics.com/policy-contracts/g1-builder-kit-e93c492-v1.zip -o kit.zip
+          unzip -q kit.zip -d kitsrc
+      - name: Build the unmodified template image
+        working-directory: kitsrc/g1-builder-kit
+        run: |
+          docker buildx build --platform linux/arm64 --load -f template/Dockerfile -t g1-submission:local .
+          mkdir -p containers/upload
+          docker save g1-submission:local -o containers/upload/submission.tar
+      - name: Template, counterfactual starts
+        working-directory: kitsrc/g1-builder-kit
+        run: bash sim.sh --seconds 30 --counterfactuals --output template_counterfactuals || echo "template counterfactual exit $?"
+      - name: Template reasons
+        if: always()
+        working-directory: kitsrc/g1-builder-kit
+        run: |
+          python3 - <<'PY'
+          import glob, json
+          for f in sorted(glob.glob("template_counterfactuals/poses/*/report.json")):
+              d = json.load(open(f))
+              print(f.split("/")[-2], d.get("status"), d.get("reason"), json.dumps(d.get("detail")), "handoff", d.get("policy_handoff_at_secs"))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: template-control
+          path: kitsrc/g1-builder-kit/template_counterfactuals
